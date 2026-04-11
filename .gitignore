@@ -1,0 +1,31 @@
+# Rust
+relay/target/
+**/*.rs.bk
+
+# Node/React Native
+node_modules/
+base-rn/node_modules/
+companion/node_modules/
+
+# iOS/watchOS
+*.xcworkspace
+watch/build/
+watch/DerivedData/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Build outputs
+dist/
+build/
+*.app
+*.ipa

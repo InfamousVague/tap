@@ -1,0 +1,37 @@
+# Tap Relay Configuration
+# Copy to ~/.tap/relay.toml or /etc/tap/relay.toml
+
+[server]
+host = "0.0.0.0"
+port = 8443
+data_dir = "~/.tap/data"
+
+[tls]
+enabled = true
+auto_cert = true
+domain = "tap.example.com"
+# Or use manual certs:
+# cert_path = "/etc/tap/cert.pem"
+# key_path = "/etc/tap/key.pem"
+
+[ssh]
+max_idle_seconds = 300
+max_connections_per_server = 3
+default_timeout_seconds = 30
+
+[health]
+ping_interval_seconds = 30
+enabled = true
+
+[audit]
+enabled = false
+retention_days = 90
+
+[notifications]
+apns_enabled = false
+# apns_key_path = "/etc/tap/apns-key.p8"
+# apns_key_id = "ABC123"
+# apns_team_id = "DEF456"
+
+[import]
+auto_import_ssh_config = true
