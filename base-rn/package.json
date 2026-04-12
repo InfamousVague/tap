@@ -1,0 +1,28 @@
+{
+  "name": "@mattssoftware/base-rn",
+  "version": "0.1.0",
+  "description": "React Native UI kit for Tap — companion to Base web",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "keywords": ["react-native", "ui-kit", "design-system"],
+  "author": "MattsSoftware",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.72.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-svg": ">=13.0.0",
+    "@react-native-community/blur": ">=4.0.0",
+    "expo-linear-gradient": ">=12.0.0",
+    "expo-haptics": ">=12.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^5.3.0"
+  }
+}
