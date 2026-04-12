@@ -1,25 +1,44 @@
 use std::collections::HashMap;
+use std::sync::Arc;
 use std::time::{Duration, Instant};
+use tokio::io::AsyncReadExt;
+
+use russh::*;
+use russh::client;
+use russh_keys::key;
 
 use crate::config::SshConfig;
 use crate::db::ExecResult;
 use crate::AppState;
 
-/// A pooled SSH connection handle
-struct PooledConnection {
-    // In the real implementation, this holds a russh::client::Handle
-    // For now we track metadata for the pool logic
-    server_id: String,
-    last_used: Instant,
-    connected: bool,
-}
-
 /// SSH connection pool — reuses connections to avoid reconnection overhead
 pub struct SshPool {
-    connections: HashMap<String, Vec<PooledConnection>>,
+    connections: HashMap<String, CachedSession>,
     max_idle_sec: u64,
     max_per_server: usize,
     default_timeout: u64,
+}
+
+struct CachedSession {
+    handle: client::Handle<SshHandler>,
+    last_used: Instant,
+}
+
+/// Minimal SSH client handler
+struct SshHandler;
+
+#[async_trait::async_trait]
+impl client::Handler for SshHandler {
+    type Error = anyhow::Error;
+
+    async fn check_server_key(
+        &mut self,
+        _server_public_key: &key::PublicKey,
+    ) -> Result<bool, Self::Error> {
+        // Accept all server keys (like ssh -o StrictHostKeyChecking=no)
+        // In production, you'd verify against known_hosts
+        Ok(true)
+    }
 }
 
 impl SshPool {
@@ -46,7 +65,6 @@ impl SshPool {
         let timeout = Duration::from_secs(timeout_sec.unwrap_or(self.default_timeout));
         let start = Instant::now();
 
-        // Get or create connection
         match self.connect_and_exec(server_id, host, port, user, command, timeout, state).await {
             Ok((exit_code, stdout, stderr)) => {
                 let duration_ms = start.elapsed().as_millis() as u64;
@@ -97,18 +115,16 @@ impl SshPool {
         let max_idle = Duration::from_secs(self.max_idle_sec);
         let now = Instant::now();
 
-        self.connections.retain(|server_id, conns| {
-            let before = conns.len();
-            conns.retain(|c| now.duration_since(c.last_used) < max_idle);
-            let removed = before - conns.len();
-            if removed > 0 {
-                tracing::debug!("Cleaned up {} idle connections for {}", removed, server_id);
+        self.connections.retain(|server_id, session| {
+            let idle = now.duration_since(session.last_used) >= max_idle;
+            if idle {
+                tracing::debug!("Cleaned up idle connection for {}", server_id);
             }
-            !conns.is_empty()
+            !idle
         });
     }
 
-    /// Internal: connect to server and execute command
+    /// Get or create an SSH connection, then execute a command
     async fn connect_and_exec(
         &mut self,
         server_id: &str,
@@ -134,35 +150,83 @@ impl SshPool {
 
         // Decrypt the SSH private key
         let private_key_bytes = crate::auth::decrypt(&master_key, &encrypted_key.encrypted_key)?;
-        let _private_key_pem = String::from_utf8(private_key_bytes)?;
+        let private_key_pem = String::from_utf8(private_key_bytes)?;
 
-        // TODO: Use russh to establish connection and execute command
-        // For now, return a placeholder indicating the infrastructure is ready
-        // The actual russh integration will be:
-        //
-        // let key_pair = russh_keys::decode_secret_key(&private_key_pem, None)?;
-        // let config = Arc::new(russh::client::Config::default());
-        // let mut session = russh::client::connect(config, (host, port), handler).await?;
-        // session.authenticate_publickey(user, Arc::new(key_pair)).await?;
-        // let mut channel = session.channel_open_session().await?;
-        // channel.exec(true, command).await?;
-        // ... read stdout/stderr with timeout ...
+        // Try to reuse cached connection, or create new one
+        let needs_new_connection = match self.connections.get(server_id) {
+            Some(cached) => {
+                // Check if connection is stale
+                Instant::now().duration_since(cached.last_used) > Duration::from_secs(self.max_idle_sec)
+            }
+            None => true,
+        };
 
-        tracing::debug!("Would execute '{}' on {}@{}:{}", command, user, host, port);
+        if needs_new_connection {
+            // Parse the private key
+            let key_pair = russh_keys::decode_secret_key(&private_key_pem, None)?;
 
-        // Mark connection as used
-        let conns = self.connections.entry(server_id.to_string()).or_default();
-        if conns.is_empty() {
-            conns.push(PooledConnection {
-                server_id: server_id.to_string(),
+            // Connect
+            let config = Arc::new(client::Config::default());
+
+            let addr = format!("{}:{}", host, port);
+            let handler = SshHandler;
+            let mut handle = client::connect(config, &*addr, handler).await?;
+
+            // Authenticate
+            let authenticated = handle
+                .authenticate_publickey(user, Arc::new(key_pair))
+                .await?;
+
+            if !authenticated {
+                anyhow::bail!("SSH authentication failed for {}@{}", user, host);
+            }
+
+            self.connections.insert(server_id.to_string(), CachedSession {
+                handle,
                 last_used: Instant::now(),
-                connected: true,
             });
-        } else {
-            conns[0].last_used = Instant::now();
         }
 
-        // Placeholder - actual SSH execution will replace this
-        Err(anyhow::anyhow!("SSH execution not yet implemented — infrastructure ready, pending russh integration"))
+        // Execute command on the connection
+        let session = self.connections.get_mut(server_id).unwrap();
+        session.last_used = Instant::now();
+
+        let mut channel = session.handle.channel_open_session().await?;
+        channel.exec(true, command.as_bytes()).await?;
+
+        // Collect output with timeout
+        let mut stdout = String::new();
+        let mut stderr = String::new();
+        let mut exit_code: i32 = -1;
+
+        let result = tokio::time::timeout(timeout, async {
+            loop {
+                match channel.wait().await {
+                    Some(ChannelMsg::Data { data }) => {
+                        stdout.push_str(&String::from_utf8_lossy(&data));
+                    }
+                    Some(ChannelMsg::ExtendedData { data, ext }) => {
+                        if ext == 1 {
+                            stderr.push_str(&String::from_utf8_lossy(&data));
+                        }
+                    }
+                    Some(ChannelMsg::ExitStatus { exit_status }) => {
+                        exit_code = exit_status as i32;
+                    }
+                    Some(ChannelMsg::Eof) | None => break,
+                    _ => {}
+                }
+            }
+        }).await;
+
+        if result.is_err() {
+            // Timeout — kill the channel
+            let _ = channel.close().await;
+            // Remove stale connection
+            self.connections.remove(server_id);
+            anyhow::bail!("Command timed out after {:?}", timeout);
+        }
+
+        Ok((exit_code, stdout, stderr))
     }
 }

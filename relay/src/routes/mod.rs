@@ -7,6 +7,7 @@ mod health;
 mod history;
 mod config_route;
 mod templates;
+mod ws;
 
 use std::sync::Arc;
 use axum::{
@@ -59,6 +60,8 @@ pub fn build_router(state: Arc<AppState>) -> Router {
         // History
         .route("/history", get(history::list))
         .route("/history/{id}", get(history::get_one))
+        // WebSocket
+        .route("/ws/exec", get(ws::ws_exec))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
     Router::new()
