@@ -1,102 +1,134 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import {
-  useTheme,
-  VStack,
-  HStack,
-  Text,
-  Card,
-  ListItem,
-  Separator,
-  Badge,
-  Skeleton,
-  icons,
-  Icon,
+  useTheme, VStack, HStack, Text, Card, Badge, Skeleton, Icon, icons,
 } from '@mattssoftware/base-rn';
-import { useQuery } from '../hooks/useApi';
+import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
 import { api, ExecHistoryEntry } from '../services/api';
+import { useQuery } from '../hooks/useApi';
+
+function relativeTime(dateStr: string | null): string {
+  if (!dateStr) return '';
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = Math.floor((now - then) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
 
 export function HistoryScreen() {
   const { colors, spacing } = useTheme();
-  const { data: history, loading, refetch } = useQuery(() => api.listHistory(50));
+  const { data: history, loading, refetch } = useQuery(() => api.listHistory(50), []);
 
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{ padding: spacing[4], gap: spacing[4] }}
-      refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={refetch} tintColor={colors.accent} />
-      }
+      contentContainerStyle={{ padding: spacing[4] }}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={amber[500]} />}
     >
-      <Text variant="heading">History</Text>
+      <VStack gap={3}>
+        <Text variant="label" color={colors.textMuted}>
+          {history?.length ?? 0} entries
+        </Text>
 
-      {loading && !history ? (
-        <VStack gap={2}>
-          {[1,2,3,4,5].map(i => <Skeleton key={i} height={60} />)}
-        </VStack>
-      ) : history?.length === 0 ? (
-        <Card variant="filled" padding="lg">
-          <VStack align="center" gap={2}>
-            <Icon svg={icons.clock} size={32} color={colors.textMuted} />
-            <Text variant="body" color={colors.textSubtle}>No execution history yet.</Text>
-          </VStack>
-        </Card>
-      ) : (
-        <Card variant="outline" padding="none">
-          {history?.map((entry, i) => (
-            <React.Fragment key={entry.id}>
-              <HistoryRow entry={entry} />
-              {i < (history?.length ?? 0) - 1 && <Separator />}
-            </React.Fragment>
-          ))}
-        </Card>
-      )}
+        {loading && !history ? (
+          <VStack gap={2}><Skeleton height={60} /><Skeleton height={60} /><Skeleton height={60} /></VStack>
+        ) : history?.length === 0 ? (
+          <Card variant="outline" padding="lg">
+            <VStack align="center" gap={2}>
+              <Icon svg={icons.clock} size={32} color={colors.textMuted} />
+              <Text variant="body" color={colors.textMuted} align="center">No history yet</Text>
+              <Text variant="caption" color={colors.textMuted} align="center">
+                Commands you run will appear here.
+              </Text>
+            </VStack>
+          </Card>
+        ) : (
+          history?.map(entry => (
+            <HistoryCard key={entry.id} entry={entry} />
+          ))
+        )}
+      </VStack>
     </ScrollView>
   );
 }
 
-function HistoryRow({ entry }: { entry: ExecHistoryEntry }) {
+function HistoryCard({ entry }: { entry: ExecHistoryEntry }) {
   const { colors, spacing } = useTheme();
-  const isSuccess = entry.exit_code === 0;
-  const displayCommand = entry.command_text || 'Unknown command';
+  const success = entry.exit_code === 0;
+  const [expanded, setExpanded] = useState(false);
+  const hasOutput = !!(entry.stdout || entry.stderr);
 
   return (
-    <ListItem
-      title={displayCommand}
-      subtitle={formatTime(entry.created_at)}
-      leading={
-        <Icon
-          svg={isSuccess ? icons.check : icons.x}
-          size={16}
-          color={isSuccess ? colors.success : colors.error}
-        />
-      }
-      trailing={
-        <HStack gap={1.5}>
-          {entry.duration_ms && (
-            <Badge color="neutral" size="sm">{entry.duration_ms}ms</Badge>
-          )}
-          {entry.device && (
-            <Badge color="accent" size="sm">{entry.device}</Badge>
+    <Card variant="outline" padding="md" onPress={hasOutput ? () => setExpanded(!expanded) : undefined}>
+      <VStack gap={2}>
+        <HStack justify="space-between" align="center">
+          <HStack gap={2} align="center" style={{ flex: 1 }}>
+            <Icon
+              svg={success ? icons.check : icons.x}
+              size={16}
+              color={success ? colors.success : colors.error}
+            />
+            <Text variant="label" numberOfLines={1} style={{ flex: 1 }}>
+              {entry.command_text ?? 'Unknown'}
+            </Text>
+          </HStack>
+          {hasOutput && (
+            <Icon
+              svg={expanded ? icons.chevronUp : icons.chevronDown}
+              size={14}
+              color={colors.textMuted}
+            />
           )}
         </HStack>
-      }
-      chevron={false}
-    />
+
+        <HStack gap={3}>
+          {entry.exit_code != null && (
+            <Text
+              variant="caption"
+              color={success ? colors.success : colors.error}
+              weight="600"
+              mono
+            >
+              exit {entry.exit_code}
+            </Text>
+          )}
+          {entry.duration_ms != null && (
+            <Text variant="caption" color={colors.textMuted} mono>{entry.duration_ms}ms</Text>
+          )}
+          {entry.device && (
+            <Badge size="sm" color="neutral" variant="subtle">
+              <Text variant="caption">{entry.device}</Text>
+            </Badge>
+          )}
+          <Text variant="caption" color={colors.textMuted}>{relativeTime(entry.created_at)}</Text>
+        </HStack>
+
+        {expanded && hasOutput && (
+          <VStack gap={1.5} style={{ marginTop: spacing[1] }}>
+            {entry.stdout ? (
+              <Card variant="filled" padding="sm">
+                <Text variant="caption" mono color={colors.text}>
+                  {entry.stdout}
+                </Text>
+              </Card>
+            ) : null}
+            {entry.stderr ? (
+              <Card variant="filled" padding="sm">
+                <HStack gap={1} align="center" style={{ marginBottom: spacing[1] }}>
+                  <Icon svg={icons.alertTriangle} size={12} color={colors.error} />
+                  <Text variant="caption" color={colors.error} weight="600">stderr</Text>
+                </HStack>
+                <Text variant="caption" mono color={colors.error}>
+                  {entry.stderr}
+                </Text>
+              </Card>
+            ) : null}
+          </VStack>
+        )}
+      </VStack>
+    </Card>
   );
-}
-
-function formatTime(isoString: string | null): string {
-  if (!isoString) return '';
-  const date = new Date(isoString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-
-  if (diffMin < 1) return 'Just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const diffDay = Math.floor(diffHr / 24);
-  return `${diffDay}d ago`;
 }

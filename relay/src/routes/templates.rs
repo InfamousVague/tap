@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, State},
+    extract::{Extension, Path, State},
     http::StatusCode,
     Json,
 };
@@ -7,6 +7,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use crate::AppState;
+use crate::auth::middleware::UserId;
 use crate::db::NewCommand;
 use crate::templates::TEMPLATES;
 
@@ -24,9 +25,14 @@ pub struct FromTemplateRequest {
 /// POST /servers/:id/commands/from-template — create a command from a template
 pub async fn create_from_template(
     State(state): State<Arc<AppState>>,
+    Extension(user): Extension<UserId>,
     Path(server_id): Path<String>,
     Json(body): Json<FromTemplateRequest>,
 ) -> Result<(StatusCode, Json<serde_json::Value>), StatusCode> {
+    // Verify server belongs to user
+    if !state.db.verify_server_owner(&server_id, &user.0).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)? {
+        return Err(StatusCode::NOT_FOUND);
+    }
     let template = TEMPLATES.iter()
         .find(|t| t.id == body.template_id)
         .ok_or(StatusCode::NOT_FOUND)?;

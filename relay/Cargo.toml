@@ -36,6 +36,12 @@ base64 = "0.22"
 rustls = "0.23"
 tokio-rustls = "0.26"
 
+# Apple Sign-In JWT verification
+rsa = "0.9"
+sha2 = "0.10"
+signature = "2"
+reqwest = { version = "0.12", features = ["json"] }
+
 # TOTP
 totp-rs = { version = "5", features = ["gen_secret"] }
 

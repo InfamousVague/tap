@@ -1,17 +1,19 @@
 use axum::{
-    extract::State,
+    extract::{Extension, State},
     http::StatusCode,
     Json,
 };
 use std::sync::Arc;
 
 use crate::AppState;
+use crate::auth::middleware::UserId;
 
-/// GET /config — full config dump for watch/companion to pull
+/// GET /config — full config dump for watch/companion to pull (user-scoped)
 pub async fn get_config(
     State(state): State<Arc<AppState>>,
+    Extension(user): Extension<UserId>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let servers = state.db.list_servers()
+    let servers = state.db.list_servers(&user.0)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     let mut server_configs = Vec::new();

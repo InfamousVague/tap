@@ -17,6 +17,20 @@ actor APIClient {
         return try await get("/config")
     }
 
+    // MARK: - Overview / Metrics
+
+    func getOverview() async throws -> [ServerOverview] {
+        let (data, response) = try await request("GET", path: "/overview")
+        try validateResponse(response)
+        do {
+            return try JSONDecoder().decode([ServerOverview].self, from: data)
+        } catch {
+            let raw = String(data: data, encoding: .utf8) ?? "nil"
+            print("[Tap] Overview raw response: \(raw.prefix(500))")
+            throw error
+        }
+    }
+
     // MARK: - Execution
 
     func execute(serverId: String, commandId: String) async throws -> ExecResult {

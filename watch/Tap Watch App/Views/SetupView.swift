@@ -1,56 +1,101 @@
 import SwiftUI
-import AVFoundation
+import AuthenticationServices
 
 struct SetupView: View {
     @EnvironmentObject var appState: AppState
-    @State private var relayURL = ""
-    @State private var token = ""
-    @State private var showManualEntry = false
+    @State private var isSigningIn = false
+    @State private var errorMessage: String?
+    @State private var showLogo = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    Image(systemName: "terminal.fill")
-                        .font(.system(size: 40))
-                        .foregroundStyle(.amber)
+                    // Animated logo
+                    ZStack {
+                        // Glow
+                        Circle()
+                            .fill(.amber.opacity(0.15))
+                            .frame(width: 70, height: 70)
+                            .blur(radius: 10)
 
-                    Text("Tap")
-                        .font(.title2.bold())
+                        Image(systemName: "terminal.fill")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.amber)
+                            .shadow(color: .amber.opacity(0.4), radius: 8)
+                            .symbolEffect(.bounce, value: showLogo)
+                    }
+                    .padding(.top, 8)
 
-                    Text("Connect to your relay to get started.")
+                    Text("Run commands on your servers, right from your wrist.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
 
-                    Button {
-                        showManualEntry = true
-                    } label: {
-                        Label("Enter Manually", systemImage: "keyboard")
+                    if isSigningIn {
+                        ProgressView()
+                            .tint(.amber)
+                            .padding()
+                    } else {
+                        SignInWithAppleButton(.signIn) { request in
+                            request.requestedScopes = [.email]
+                        } onCompletion: { result in
+                            handleSignIn(result)
+                        }
+                        .signInWithAppleButtonStyle(.white)
+                        .frame(height: 45)
+                        .cornerRadius(10)
                     }
 
-                    if showManualEntry {
-                        VStack(spacing: 12) {
-                            TextField("Relay URL", text: $relayURL)
-                                .textContentType(.URL)
-                                .autocorrectionDisabled()
-
-                            SecureField("API Token", text: $token)
-
-                            Button("Connect") {
-                                guard !relayURL.isEmpty, !token.isEmpty else { return }
-                                HapticService.shared.play(.confirm)
-                                appState.configure(relayURL: relayURL, token: token)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.amber)
-                            .disabled(relayURL.isEmpty || token.isEmpty)
-                        }
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(.caption2)
+                            .foregroundStyle(.red)
+                            .multilineTextAlignment(.center)
                     }
                 }
                 .padding()
             }
-            .navigationTitle("Setup")
+            .navigationTitle("Tap")
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    showLogo = true
+                }
+            }
+        }
+    }
+
+    private func handleSignIn(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let identityToken = credential.identityToken,
+                  let tokenString = String(data: identityToken, encoding: .utf8) else {
+                errorMessage = "Could not read Apple ID credentials."
+                return
+            }
+
+            isSigningIn = true
+            errorMessage = nil
+
+            Task {
+                await appState.signInWithApple(
+                    identityToken: tokenString,
+                    userIdentifier: credential.user,
+                    email: credential.email
+                )
+                if !appState.isConfigured {
+                    errorMessage = "Sign in failed. Please try again."
+                    HapticService.shared.play(.failure)
+                }
+                isSigningIn = false
+            }
+
+        case .failure(let error):
+            if (error as NSError).code == ASAuthorizationError.canceled.rawValue {
+                return
+            }
+            errorMessage = "Sign in failed."
         }
     }
 }

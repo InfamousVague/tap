@@ -74,13 +74,13 @@ struct CheckServersIntent: AppIntent {
         let config = try await client.getConfig()
 
         let total = config.servers.count
-        let up = config.servers.filter { $0.status == "up" }.count
+        let up = config.servers.filter { $0.status == .up }.count
         let down = total - up
 
         if down == 0 {
             return .result(dialog: "All \(total) servers are online.")
         } else {
-            let downServers = config.servers.filter { $0.status != "up" }.map { $0.name }.joined(separator: ", ")
+            let downServers = config.servers.filter { $0.status != .up }.map { $0.name }.joined(separator: ", ")
             return .result(dialog: "\(up) of \(total) servers online. Down: \(downServers)")
         }
     }
@@ -93,9 +93,7 @@ struct TapShortcutsProvider: AppShortcutsProvider {
         AppShortcut(
             intent: RunCommandIntent(),
             phrases: [
-                "Tap \(\.$commandLabel)",
-                "Tap run \(\.$commandLabel)",
-                "Tap \(\.$commandLabel) on \(\.$serverName)",
+                "Run a command with \(.applicationName)",
             ],
             shortTitle: "Run Command",
             systemImageName: "terminal"
@@ -103,8 +101,8 @@ struct TapShortcutsProvider: AppShortcutsProvider {
         AppShortcut(
             intent: CheckServersIntent(),
             phrases: [
-                "Check my servers on Tap",
-                "Tap server status",
+                "Check my servers with \(.applicationName)",
+                "\(.applicationName) server status",
             ],
             shortTitle: "Check Servers",
             systemImageName: "server.rack"

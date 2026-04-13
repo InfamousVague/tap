@@ -8,6 +8,8 @@ mod history;
 mod config_route;
 mod templates;
 mod ws;
+mod setup;
+mod overview;
 
 use std::sync::Arc;
 use axum::{
@@ -24,25 +26,30 @@ use crate::auth::auth_middleware;
 pub fn build_router(state: Arc<AppState>) -> Router {
     // Public routes (no auth required)
     let public = Router::new()
+        .route("/auth/apple", post(auth_routes::apple_sign_in))
         .route("/auth/setup", post(auth_routes::setup))
-        .route("/health", get(health::health_check));
+        .route("/health", get(health::health_check))
+        .route("/connect/:token", get(setup::install_script))
+        .route("/setup/register/:token", post(setup::register_server))
+        .route("/setup/pubkey", get(setup::pubkey));
 
     // Protected routes (require valid Bearer token)
     let protected = Router::new()
         // Auth management
         .route("/auth/token", post(auth_routes::create_token))
-        .route("/auth/token/{id}", delete(auth_routes::revoke_token))
+        .route("/auth/token/:id", delete(auth_routes::revoke_token))
         // Servers
         .route("/servers", get(servers::list).post(servers::create))
-        .route("/servers/{id}", put(servers::update).delete(servers::delete_server))
-        .route("/servers/{id}/ping", get(servers::ping))
+        .route("/servers/:id", put(servers::update).delete(servers::delete_server))
+        .route("/servers/:id/ping", get(servers::ping))
         .route("/servers/import-ssh-config", post(servers::import_config))
+        .route("/servers/import", post(servers::bulk_import))
         // Commands
-        .route("/servers/{id}/commands", get(commands::list).post(commands::create))
-        .route("/commands/{id}", put(commands::update).delete(commands::delete_command))
+        .route("/servers/:id/commands", get(commands::list).post(commands::create))
+        .route("/commands/:id", put(commands::update).delete(commands::delete_command))
         // Suites
-        .route("/servers/{id}/suites", get(commands::list_suites).post(commands::create_suite))
-        .route("/suites/{id}", delete(commands::delete_suite))
+        .route("/servers/:id/suites", get(commands::list_suites).post(commands::create_suite))
+        .route("/suites/:id", delete(commands::delete_suite))
         // Execution
         .route("/exec", post(exec::execute))
         .route("/exec/adhoc", post(exec::execute_adhoc))
@@ -50,16 +57,20 @@ pub fn build_router(state: Arc<AppState>) -> Router {
         .route("/keys", get(keys::list))
         .route("/keys/upload", post(keys::upload))
         .route("/keys/generate", post(keys::generate))
-        .route("/keys/{id}", delete(keys::delete_key))
-        .route("/keys/{id}/public", get(keys::get_public))
+        .route("/keys/:id", delete(keys::delete_key))
+        .route("/keys/:id/public", get(keys::get_public))
         // Templates
         .route("/templates", get(templates::list))
-        .route("/servers/{id}/commands/from-template", post(templates::create_from_template))
-        // Config
+        .route("/servers/:id/commands/from-template", post(templates::create_from_template))
+        // Config & Overview
         .route("/config", get(config_route::get_config))
+        .route("/overview", get(overview::get_overview))
         // History
         .route("/history", get(history::list))
-        .route("/history/{id}", get(history::get_one))
+        .route("/history/:id", get(history::get_one))
+        // Setup (authenticated — generates setup tokens)
+        .route("/setup/token", post(setup::create_setup_token))
+        .route("/setup/provision", post(setup::provision_server))
         // WebSocket
         .route("/ws/exec", get(ws::ws_exec))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth_middleware));

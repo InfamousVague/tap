@@ -6,11 +6,15 @@ relay/target/
 node_modules/
 base-rn/node_modules/
 companion/node_modules/
+companion/.expo/
+companion/android/
+companion/ios/
+**/package-lock.json
 
 # iOS/watchOS
-*.xcworkspace
 watch/build/
 watch/DerivedData/
+xcuserdata/
 
 # Environment
 .env
@@ -29,3 +33,18 @@ dist/
 build/
 *.app
 *.ipa
+
+# Deployment
+deploy.sh
+configs/
+tap
+
+# Secrets
+*.pem
+*.key
+id_rsa*
+.stash.lock
+
+# macOS
+macos/build/
+macos/DerivedData/

@@ -1,4 +1,4 @@
-mod middleware;
+pub mod middleware;
 
 pub use middleware::auth_middleware;
 
@@ -6,7 +6,6 @@ use aes_gcm::{Aes256Gcm, KeyInit, Nonce};
 use aes_gcm::aead::Aead;
 use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::SaltString};
 use rand::rngs::OsRng;
-use std::io::{self, Write, BufRead};
 
 use crate::config::RelayConfig;
 use crate::db::Database;
@@ -72,75 +71,83 @@ pub fn generate_token() -> String {
     format!("tap_{}", base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(bytes))
 }
 
-/// First-time setup or unlock existing master passphrase
-pub async fn setup_or_unlock(db: &Database, _config: &RelayConfig) -> anyhow::Result<[u8; 32]> {
+/// Auto-setup or unlock master encryption key.
+/// On first run, generates a random passphrase automatically (no prompts).
+/// On subsequent runs, reads the passphrase from the data directory.
+pub async fn setup_or_unlock(db: &Database, config: &RelayConfig) -> anyhow::Result<[u8; 32]> {
+    let passphrase_path = std::path::Path::new(&config.data_dir()).join(".master");
     let existing_salt = db.get_master_salt()?;
 
     if let Some(salt) = existing_salt {
-        // Existing setup — prompt for passphrase
+        // Existing setup — read passphrase from file
         let verify_data = db.get_master_verify()?
             .ok_or_else(|| anyhow::anyhow!("Corrupted DB: salt exists but no verify token"))?;
 
-        loop {
-            let passphrase = prompt_passphrase("Enter master passphrase: ")?;
-            let key = derive_key(&passphrase, &salt);
+        let passphrase = std::fs::read_to_string(&passphrase_path)
+            .map_err(|_| anyhow::anyhow!(
+                "Master passphrase file missing at {:?}. Cannot unlock encryption keys.",
+                passphrase_path
+            ))?;
+        let passphrase = passphrase.trim().to_string();
 
-            // Try to decrypt the verify token
-            if decrypt(&key, &verify_data).is_ok() {
-                tracing::info!("Master passphrase accepted");
-                return Ok(key);
-            }
-            eprintln!("Incorrect passphrase. Try again.");
+        let key = derive_key(&passphrase, &salt);
+        if decrypt(&key, &verify_data).is_ok() {
+            tracing::info!("Master key unlocked");
+            return Ok(key);
         }
+        anyhow::bail!("Master passphrase file is invalid. Cannot unlock encryption keys.");
     } else {
-        // First-time setup
-        println!("\n  Welcome to Tap Relay!\n");
-        println!("  Set a master passphrase to encrypt your SSH keys at rest.");
-        println!("  You'll need this passphrase every time the relay starts.\n");
+        // First-time setup — fully automatic
+        tracing::info!("First-time setup — generating master key");
 
-        let passphrase = loop {
-            let p1 = prompt_passphrase("  New master passphrase: ")?;
-            if p1.len() < 8 {
-                eprintln!("  Passphrase must be at least 8 characters.");
-                continue;
-            }
-            let p2 = prompt_passphrase("  Confirm passphrase: ")?;
-            if p1 != p2 {
-                eprintln!("  Passphrases don't match. Try again.");
-                continue;
-            }
-            break p1;
-        };
+        // Generate a random 32-byte passphrase
+        use base64::Engine;
+        let random_bytes: [u8; 32] = rand::random();
+        let passphrase = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(random_bytes);
 
-        // Generate salt and derive key
+        // Derive encryption key
         let salt: [u8; 16] = rand::random();
         let key = derive_key(&passphrase, &salt);
 
-        // Create a verify token (encrypt a known value)
+        // Create verify token
         let verify_plaintext = b"tap-relay-verify";
         let verify_encrypted = encrypt(&key, verify_plaintext)?;
-
         db.set_master_credentials(&salt, &verify_encrypted)?;
 
-        // Generate first API token
+        // Save passphrase to file (restricted permissions)
+        let data_dir = config.data_dir();
+        std::fs::create_dir_all(&data_dir)?;
+        std::fs::write(&passphrase_path, &passphrase)?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&passphrase_path, std::fs::Permissions::from_mode(0o600))?;
+        }
+
+        // Create a system admin user for the initial setup
+        let admin_user_id = db.find_or_create_user("setup:admin", None)?;
+
+        // Generate first API token linked to admin user
         let token = generate_token();
         let token_hash = hash_token(&token)?;
         let token_id = uuid::Uuid::new_v4().to_string();
-        db.store_token(&token_id, "Initial setup token", &token_hash, Some("cli"))?;
+        db.store_token(&token_id, &admin_user_id, "Initial setup token", &token_hash, Some("cli"))?;
 
-        println!("\n  Setup complete!\n");
-        println!("  Your first API token (save this — it won't be shown again):\n");
-        println!("    {}\n", token);
-        println!("  Use this token in your watch/companion app to connect.\n");
+        println!();
+        println!("  ┌─────────────────────────────────────────────────┐");
+        println!("  │              Tap Relay — First Run              │");
+        println!("  ├─────────────────────────────────────────────────┤");
+        println!("  │                                                 │");
+        println!("  │  Your API token (save this!):                   │");
+        println!("  │                                                 │");
+        println!("  │  {}  │", &token);
+        println!("  │                                                 │");
+        println!("  │  Paste this token into the Tap watch app        │");
+        println!("  │  to connect. It won't be shown again.           │");
+        println!("  │                                                 │");
+        println!("  └─────────────────────────────────────────────────┘");
+        println!();
 
         Ok(key)
     }
-}
-
-fn prompt_passphrase(prompt: &str) -> io::Result<String> {
-    eprint!("{}", prompt);
-    io::stderr().flush()?;
-    let mut line = String::new();
-    io::stdin().lock().read_line(&mut line)?;
-    Ok(line.trim().to_string())
 }

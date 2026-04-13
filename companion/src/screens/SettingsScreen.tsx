@@ -1,127 +1,93 @@
-import React, { useState } from 'react';
-import { ScrollView, Alert } from 'react-native';
+import React from 'react';
+import { ScrollView, RefreshControl } from 'react-native';
 import {
-  useTheme,
-  VStack,
-  HStack,
-  Text,
-  Card,
-  ListItem,
-  Separator,
-  Toggle,
-  Button,
-  Badge,
-  icons,
-  Icon,
+  useTheme, VStack, HStack, Text, Card, ListItem, Separator, Badge, Icon, icons, Skeleton, Button,
 } from '@mattssoftware/base-rn';
+import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
 import { api } from '../services/api';
 import { useQuery } from '../hooks/useApi';
+import { useAuth } from '../hooks/useAuth';
 
-export function SettingsScreen({ navigation }: any) {
+export function SettingsScreen() {
   const { colors, spacing } = useTheme();
-  const { data: health } = useQuery(() => api.healthCheck());
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-  const disconnect = () => {
-    Alert.alert(
-      'Disconnect Relay',
-      'This will remove your relay connection. You can reconnect later.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Disconnect',
-          style: 'destructive',
-          onPress: async () => {
-            await api.disconnect();
-            // TODO: navigate to setup
-          },
-        },
-      ]
-    );
-  };
+  const { data: health, loading, refetch } = useQuery(() => api.healthCheck(), []);
+  const { signOut } = useAuth();
 
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{ padding: spacing[4], gap: spacing[6] }}
+      contentContainerStyle={{ padding: spacing[4] }}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor={amber[500]} />}
     >
-      <Text variant="heading">Settings</Text>
+      <VStack gap={6}>
+        {/* Relay Connection */}
+        <VStack gap={2}>
+          <Text variant="label" color={colors.textMuted}>Relay</Text>
+          <Card variant="outline" padding="none">
+            <ListItem
+              title="Status"
+              trailing={
+                loading ? <Skeleton width={60} height={20} /> : (
+                  <Badge size="sm" color={health ? 'success' : 'error'} variant="subtle">
+                    <Text variant="caption">{health ? 'Connected' : 'Offline'}</Text>
+                  </Badge>
+                )
+              }
+            />
+            <Separator />
+            <ListItem
+              title="Version"
+              trailing={
+                <Text variant="caption" color={colors.textMuted} mono>
+                  {health?.version ?? '-'}
+                </Text>
+              }
+            />
+            <Separator />
+            <ListItem
+              title="Endpoint"
+              trailing={
+                <Text variant="caption" color={colors.textMuted} mono>
+                  tap.mattssoftware.com
+                </Text>
+              }
+            />
+          </Card>
+        </VStack>
 
-      {/* Relay Connection */}
-      <VStack gap={2}>
-        <Text variant="label" color={colors.textSubtle}>Relay</Text>
-        <Card variant="outline" padding="none">
-          <ListItem
-            title="Connection"
-            trailing={
-              <Badge color={health ? 'success' : 'error'} size="sm">
-                {health ? 'Connected' : 'Offline'}
-              </Badge>
-            }
-            chevron={false}
-          />
-          <Separator />
-          <ListItem
-            title="Version"
-            trailing={<Text variant="caption" color={colors.textSubtle}>{health?.version ?? '—'}</Text>}
-            chevron={false}
-          />
-          <Separator />
-          <ListItem
-            title="Generate Watch QR"
-            subtitle="Pair your Apple Watch"
-            leading={<Icon svg={icons.qrCode} size={18} color={colors.accent} />}
-            onPress={() => navigation.navigate('WatchSetup')}
-          />
-        </Card>
-      </VStack>
+        {/* App Info */}
+        <VStack gap={2}>
+          <Text variant="label" color={colors.textMuted}>About</Text>
+          <Card variant="outline" padding="none">
+            <ListItem
+              title="App Version"
+              trailing={<Text variant="caption" color={colors.textMuted} mono>0.1.0</Text>}
+            />
+            <Separator />
+            <ListItem
+              title="Developer"
+              trailing={
+                <HStack gap={1} align="center">
+                  <Icon svg={icons.code} size={14} color={amber[500]} />
+                  <Text variant="caption" color={colors.textMuted}>MattsSoftware</Text>
+                </HStack>
+              }
+            />
+          </Card>
+        </VStack>
 
-      {/* Notifications */}
-      <VStack gap={2}>
-        <Text variant="label" color={colors.textSubtle}>Notifications</Text>
-        <Card variant="outline" padding="none">
-          <ListItem
-            title="Server Alerts"
-            subtitle="Get notified when servers go down"
-            trailing={
-              <Toggle value={notificationsEnabled} onValueChange={setNotificationsEnabled} size="sm" />
-            }
-            chevron={false}
-          />
-        </Card>
-      </VStack>
-
-      {/* Tokens */}
-      <VStack gap={2}>
-        <Text variant="label" color={colors.textSubtle}>Security</Text>
-        <Card variant="outline" padding="none">
-          <ListItem
-            title="API Tokens"
-            subtitle="Manage device tokens"
-            leading={<Icon svg={icons.shield} size={18} color={colors.accent} />}
-            onPress={() => navigation.navigate('Tokens')}
-          />
-          <Separator />
-          <ListItem
-            title="Two-Factor (TOTP)"
-            subtitle="Optional extra security"
-            leading={<Icon svg={icons.key} size={18} color={colors.accent} />}
-            onPress={() => {}}
-          />
-        </Card>
-      </VStack>
-
-      {/* Danger zone */}
-      <VStack gap={2}>
-        <Button variant="ghost" intent="error" onPress={disconnect}>
-          Disconnect Relay
-        </Button>
-      </VStack>
-
-      {/* About */}
-      <VStack align="center" gap={1}>
-        <Text variant="caption" color={colors.textMuted}>Tap v0.1.0</Text>
-        <Text variant="caption" color={colors.textMuted}>MattsSoftware · MIT License</Text>
+        {/* Account */}
+        <VStack gap={2}>
+          <Text variant="label" color={colors.textMuted}>Account</Text>
+          <Card variant="outline" padding="md">
+            <Button variant="ghost" onPress={signOut}>
+              <HStack gap={2} align="center">
+                <Icon svg={icons.logOut} size={16} color={colors.error} />
+                <Text variant="label" color={colors.error}>Sign Out</Text>
+              </HStack>
+            </Button>
+          </Card>
+        </VStack>
       </VStack>
     </ScrollView>
   );

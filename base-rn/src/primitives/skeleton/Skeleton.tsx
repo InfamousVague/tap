@@ -47,8 +47,8 @@ export function Skeleton({
       style={[
         animatedStyle,
         {
-          width: circle ? size : width,
-          height: circle ? size : height,
+          width: (circle ? size : width) as number | undefined,
+          height: (circle ? size : height) as number | undefined,
           borderRadius: circle ? (size! / 2) : (radiusProp ?? radius.md),
           backgroundColor: colors.bgMuted,
         },

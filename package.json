@@ -1,0 +1,21 @@
+{
+  "name": "tap",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "phone": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo run:ios --device",
+    "phone:sim": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo start --ios",
+    "phone:start": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo start",
+    "phone:prebuild": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo prebuild --clean",
+    "phone:build": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo prebuild --clean && npx expo run:ios --device",
+    "watch:sim": "cd watch && xcodebuild -project Tap.xcodeproj -scheme 'Tap Watch App' -destination 'platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)' -configuration Debug build 2>&1 | tail -5",
+    "watch:open": "open watch/Tap.xcodeproj",
+    "relay:dev": "cd relay && cargo run",
+    "relay:build": "cd relay && cargo build --release",
+    "relay:deploy": "bash deploy.sh",
+    "relay:logs": "source .env && sshpass -e ssh -p $VPS_PORT $VPS_USER@$VPS_HOST journalctl -u tap-relay -f",
+    "relay:status": "source .env && sshpass -e ssh -p $VPS_PORT $VPS_USER@$VPS_HOST systemctl status tap-relay",
+    "typecheck": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx tsc --noEmit",
+    "clean": "cd companion && rm -rf node_modules .expo ios && npm install"
+  }
+}

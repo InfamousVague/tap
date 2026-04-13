@@ -1,26 +1,33 @@
 use axum::{
-    extract::State,
+    extract::{Extension, State},
     http::StatusCode,
     Json,
 };
 use std::sync::Arc;
 
 use crate::AppState;
+use crate::auth::middleware::UserId;
 use crate::db::{ExecRequest, ExecAdhocRequest, ExecResult, ExecEntry};
 
 pub async fn execute(
     State(state): State<Arc<AppState>>,
+    Extension(user): Extension<UserId>,
     Json(body): Json<ExecRequest>,
 ) -> Result<Json<ExecResult>, StatusCode> {
+    // Verify server belongs to user
+    let server = state.db.get_server(&body.server_id, &user.0)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        .ok_or(StatusCode::NOT_FOUND)?;
+
     // Look up the command
     let command = state.db.get_command(&body.command_id)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         .ok_or(StatusCode::NOT_FOUND)?;
 
-    // Look up the server
-    let server = state.db.get_server(&body.server_id)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        .ok_or(StatusCode::NOT_FOUND)?;
+    // Verify command belongs to this server
+    if command.server_id != server.id {
+        return Err(StatusCode::NOT_FOUND);
+    }
 
     // Execute via SSH pool
     let mut pool = state.ssh_pool.lock().await;
@@ -46,10 +53,10 @@ pub async fn execute(
             stdout: Some(result.stdout.clone()),
             stderr: Some(result.stderr.clone()),
             duration_ms: Some(result.duration_ms as u32),
-            device: None, // TODO: extract from token metadata
+            device: None,
             created_at: None,
         };
-        let _ = state.db.record_execution(&entry);
+        let _ = state.db.record_execution(&entry, &user.0);
     }
 
     Ok(Json(result))
@@ -57,10 +64,11 @@ pub async fn execute(
 
 pub async fn execute_adhoc(
     State(state): State<Arc<AppState>>,
+    Extension(user): Extension<UserId>,
     Json(body): Json<ExecAdhocRequest>,
 ) -> Result<Json<ExecResult>, StatusCode> {
-    // Look up the server
-    let server = state.db.get_server(&body.server_id)
+    // Verify server belongs to user
+    let server = state.db.get_server(&body.server_id, &user.0)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         .ok_or(StatusCode::NOT_FOUND)?;
 
@@ -91,7 +99,7 @@ pub async fn execute_adhoc(
             device: None,
             created_at: None,
         };
-        let _ = state.db.record_execution(&entry);
+        let _ = state.db.record_execution(&entry, &user.0);
     }
 
     Ok(Json(result))

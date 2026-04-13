@@ -10,7 +10,7 @@ use crate::AppState;
 use super::verify_token;
 
 /// Auth middleware — extracts Bearer token from Authorization header,
-/// verifies it against stored Argon2 hashes, and injects token_id into extensions.
+/// verifies it against stored Argon2 hashes, and injects UserId into extensions.
 pub async fn auth_middleware(
     State(state): State<Arc<AppState>>,
     mut req: Request,
@@ -24,28 +24,29 @@ pub async fn auth_middleware(
     let token = auth_header.strip_prefix("Bearer ")
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    // Check token against all stored hashes
+    // Check token against all stored hashes — returns (token_id, user_id, hash)
     let token_hashes = state.db.all_token_hashes()
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let mut matched_id = None;
-    for (id, hash) in &token_hashes {
+    let mut matched: Option<(String, String)> = None;
+    for (id, user_id, hash) in &token_hashes {
         if verify_token(token, hash) {
-            matched_id = Some(id.clone());
+            matched = Some((id.clone(), user_id.clone()));
             break;
         }
     }
 
-    let token_id = matched_id.ok_or(StatusCode::UNAUTHORIZED)?;
+    let (token_id, user_id) = matched.ok_or(StatusCode::UNAUTHORIZED)?;
 
     // Update last_used
     let _ = state.db.update_token_last_used(&token_id);
 
-    // Store token_id in request extensions for downstream handlers
-    req.extensions_mut().insert(TokenId(token_id));
+    // Store user_id in request extensions for downstream handlers
+    req.extensions_mut().insert(UserId(user_id));
 
     Ok(next.run(req).await)
 }
 
+/// The authenticated user's ID, injected by auth middleware.
 #[derive(Clone, Debug)]
-pub struct TokenId(pub String);
+pub struct UserId(pub String);

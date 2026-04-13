@@ -8,6 +8,11 @@ struct TapApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
+                .onAppear {
+                    // Mirror keychain credentials to shared UserDefaults
+                    // so the widget extension can access them
+                    KeychainService.shared.syncToSharedDefaults()
+                }
         }
     }
 }

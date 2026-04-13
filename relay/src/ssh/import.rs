@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use crate::db::{Database, NewServer};
 
 /// Parse ~/.ssh/config and import servers into the database
-pub fn import_ssh_config(db: &Database) -> anyhow::Result<usize> {
+pub fn import_ssh_config(db: &Database, user_id: &str) -> anyhow::Result<usize> {
     let home = std::env::var("HOME")?;
     let config_path = PathBuf::from(&home).join(".ssh").join("config");
 
@@ -20,7 +20,7 @@ pub fn import_ssh_config(db: &Database) -> anyhow::Result<usize> {
         if server.host.is_empty() || server.host == "*" {
             continue;
         }
-        db.create_server(&server)?;
+        db.create_server(&server, user_id)?;
         count += 1;
     }
 

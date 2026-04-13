@@ -37,16 +37,13 @@ async fn main() -> anyhow::Result<()> {
     db.run_migrations()?;
     tracing::info!("Database initialized");
 
-    // Auto-import SSH config on first run
-    if config.import.auto_import_ssh_config && db.server_count()? == 0 {
-        match ssh::import_ssh_config(&db) {
-            Ok(count) => tracing::info!("Imported {} servers from ~/.ssh/config", count),
-            Err(e) => tracing::warn!("SSH config import failed: {}", e),
-        }
-    }
+    // Auto-import disabled in multi-tenant mode (use /servers/import-ssh-config per user)
 
     // Setup or unlock master passphrase
     let master_key = auth::setup_or_unlock(&db, &config).await?;
+
+    // Ensure relay has its own SSH keypair for connecting to servers
+    ssh::ensure_relay_keypair(&db, &master_key, &config).await?;
 
     // Create app state
     let state = Arc::new(AppState {

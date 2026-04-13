@@ -25,18 +25,78 @@ impl Database {
         Ok(())
     }
 
-    // --- Servers ---
+    // --- Users ---
 
-    pub fn server_count(&self) -> anyhow::Result<usize> {
+    pub fn find_or_create_user(&self, apple_user_id: &str, email: Option<&str>) -> anyhow::Result<String> {
         let conn = self.conn.lock().unwrap();
-        let count: usize = conn.query_row("SELECT COUNT(*) FROM servers", [], |r| r.get(0))?;
+        // Check if user exists
+        let existing: Option<String> = conn.query_row(
+            "SELECT id FROM users WHERE apple_user_id = ?1", params![apple_user_id], |r| r.get(0)
+        ).optional()?;
+
+        if let Some(id) = existing {
+            // Update email if provided
+            if let Some(email) = email {
+                conn.execute("UPDATE users SET email = ?2 WHERE id = ?1", params![id, email])?;
+            }
+            return Ok(id);
+        }
+
+        // Create new user
+        let id = uuid::Uuid::new_v4().to_string();
+        conn.execute(
+            "INSERT INTO users (id, apple_user_id, email) VALUES (?1, ?2, ?3)",
+            params![id, apple_user_id, email],
+        )?;
+        Ok(id)
+    }
+
+    pub fn get_user_by_apple_id(&self, apple_user_id: &str) -> anyhow::Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let id: Option<String> = conn.query_row(
+            "SELECT id FROM users WHERE apple_user_id = ?1", params![apple_user_id], |r| r.get(0)
+        ).optional()?;
+        Ok(id)
+    }
+
+    // --- Servers (user-scoped) ---
+
+    pub fn server_count(&self, user_id: &str) -> anyhow::Result<usize> {
+        let conn = self.conn.lock().unwrap();
+        let count: usize = conn.query_row(
+            "SELECT COUNT(*) FROM servers WHERE user_id = ?1", params![user_id], |r| r.get(0)
+        )?;
         Ok(count)
     }
 
-    pub fn list_servers(&self) -> anyhow::Result<Vec<Server>> {
+    pub fn list_servers(&self, user_id: &str) -> anyhow::Result<Vec<Server>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
-            "SELECT id, name, host, port, user, key_id, sort_order, status, latency_ms, created_at, updated_at FROM servers ORDER BY sort_order, name"
+            "SELECT id, name, host, port, user, key_id, sort_order, status, latency_ms, created_at, updated_at FROM servers WHERE user_id = ?1 ORDER BY sort_order, name"
+        )?;
+        let servers = stmt.query_map(params![user_id], |row| {
+            Ok(Server {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                host: row.get(2)?,
+                port: row.get(3)?,
+                user: row.get(4)?,
+                key_id: row.get(5)?,
+                sort_order: row.get(6)?,
+                status: row.get(7)?,
+                latency_ms: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+            })
+        })?.collect::<Result<Vec<_>, _>>()?;
+        Ok(servers)
+    }
+
+    /// List ALL servers (for health checks — system-level, no user filter)
+    pub fn list_all_servers(&self) -> anyhow::Result<Vec<Server>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, name, host, port, user, key_id, sort_order, status, latency_ms, created_at, updated_at FROM servers ORDER BY name"
         )?;
         let servers = stmt.query_map([], |row| {
             Ok(Server {
@@ -56,7 +116,31 @@ impl Database {
         Ok(servers)
     }
 
-    pub fn get_server(&self, id: &str) -> anyhow::Result<Option<Server>> {
+    pub fn get_server(&self, id: &str, user_id: &str) -> anyhow::Result<Option<Server>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, name, host, port, user, key_id, sort_order, status, latency_ms, created_at, updated_at FROM servers WHERE id = ?1 AND user_id = ?2"
+        )?;
+        let server = stmt.query_row(params![id, user_id], |row| {
+            Ok(Server {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                host: row.get(2)?,
+                port: row.get(3)?,
+                user: row.get(4)?,
+                key_id: row.get(5)?,
+                sort_order: row.get(6)?,
+                status: row.get(7)?,
+                latency_ms: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+            })
+        }).optional()?;
+        Ok(server)
+    }
+
+    /// Get server without user check (for system-level operations like health pings)
+    pub fn get_server_system(&self, id: &str) -> anyhow::Result<Option<Server>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
             "SELECT id, name, host, port, user, key_id, sort_order, status, latency_ms, created_at, updated_at FROM servers WHERE id = ?1"
@@ -79,28 +163,28 @@ impl Database {
         Ok(server)
     }
 
-    pub fn create_server(&self, server: &NewServer) -> anyhow::Result<String> {
+    pub fn create_server(&self, server: &NewServer, user_id: &str) -> anyhow::Result<String> {
         let conn = self.conn.lock().unwrap();
         let id = uuid::Uuid::new_v4().to_string();
         conn.execute(
-            "INSERT INTO servers (id, name, host, port, user, key_id, sort_order) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
-            params![id, server.name, server.host, server.port, server.user, server.key_id, server.sort_order],
+            "INSERT INTO servers (id, user_id, name, host, port, user, key_id, sort_order) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+            params![id, user_id, server.name, server.host, server.port, server.user, server.key_id, server.sort_order],
         )?;
         Ok(id)
     }
 
-    pub fn update_server(&self, id: &str, server: &NewServer) -> anyhow::Result<()> {
+    pub fn update_server(&self, id: &str, user_id: &str, server: &NewServer) -> anyhow::Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
-            "UPDATE servers SET name=?2, host=?3, port=?4, user=?5, key_id=?6, sort_order=?7, updated_at=datetime('now') WHERE id=?1",
-            params![id, server.name, server.host, server.port, server.user, server.key_id, server.sort_order],
+            "UPDATE servers SET name=?3, host=?4, port=?5, user=?6, key_id=?7, sort_order=?8, updated_at=datetime('now') WHERE id=?1 AND user_id=?2",
+            params![id, user_id, server.name, server.host, server.port, server.user, server.key_id, server.sort_order],
         )?;
         Ok(())
     }
 
-    pub fn delete_server(&self, id: &str) -> anyhow::Result<()> {
+    pub fn delete_server(&self, id: &str, user_id: &str) -> anyhow::Result<()> {
         let conn = self.conn.lock().unwrap();
-        conn.execute("DELETE FROM servers WHERE id = ?1", params![id])?;
+        conn.execute("DELETE FROM servers WHERE id = ?1 AND user_id = ?2", params![id, user_id])?;
         Ok(())
     }
 
@@ -113,7 +197,7 @@ impl Database {
         Ok(())
     }
 
-    // --- Commands ---
+    // --- Commands (scoped through server ownership) ---
 
     pub fn list_commands(&self, server_id: &str) -> anyhow::Result<Vec<Command>> {
         let conn = self.conn.lock().unwrap();
@@ -182,6 +266,17 @@ impl Database {
         Ok(())
     }
 
+    /// Verify a server belongs to a user (for authorization checks on commands/suites/exec)
+    pub fn verify_server_owner(&self, server_id: &str, user_id: &str) -> anyhow::Result<bool> {
+        let conn = self.conn.lock().unwrap();
+        let count: usize = conn.query_row(
+            "SELECT COUNT(*) FROM servers WHERE id = ?1 AND user_id = ?2",
+            params![server_id, user_id],
+            |r| r.get(0),
+        )?;
+        Ok(count > 0)
+    }
+
     // --- Suites ---
 
     pub fn list_suites(&self, server_id: &str) -> anyhow::Result<Vec<Suite>> {
@@ -233,14 +328,14 @@ impl Database {
         Ok(steps)
     }
 
-    // --- SSH Keys ---
+    // --- SSH Keys (user-scoped, except relay key) ---
 
-    pub fn list_keys(&self) -> anyhow::Result<Vec<SshKeyMeta>> {
+    pub fn list_keys(&self, user_id: &str) -> anyhow::Result<Vec<SshKeyMeta>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
-            "SELECT id, label, public_key, key_type, created_at FROM ssh_keys ORDER BY label"
+            "SELECT id, label, public_key, key_type, created_at FROM ssh_keys WHERE user_id = ?1 OR user_id IS NULL ORDER BY label"
         )?;
-        let keys = stmt.query_map([], |row| {
+        let keys = stmt.query_map(params![user_id], |row| {
             Ok(SshKeyMeta {
                 id: row.get(0)?,
                 label: row.get(1)?,
@@ -277,29 +372,46 @@ impl Database {
         Ok(())
     }
 
-    pub fn delete_key(&self, id: &str) -> anyhow::Result<()> {
-        let conn = self.conn.lock().unwrap();
-        conn.execute("DELETE FROM ssh_keys WHERE id = ?1", params![id])?;
-        Ok(())
-    }
-
-    // --- Auth Tokens ---
-
-    pub fn store_token(&self, id: &str, label: &str, token_hash: &str, device_type: Option<&str>) -> anyhow::Result<()> {
+    pub fn store_key_for_user(&self, id: &str, user_id: &str, label: &str, encrypted_key: &[u8], public_key: &str, key_type: &str) -> anyhow::Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
-            "INSERT INTO api_tokens (id, label, token_hash, device_type) VALUES (?1, ?2, ?3, ?4)",
-            params![id, label, token_hash, device_type],
+            "INSERT INTO ssh_keys (id, user_id, label, encrypted_key, public_key, key_type) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            params![id, user_id, label, encrypted_key, public_key, key_type],
         )?;
         Ok(())
     }
 
-    pub fn list_tokens(&self) -> anyhow::Result<Vec<ApiToken>> {
+    pub fn find_key_by_label(&self, label: &str) -> anyhow::Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare("SELECT id FROM ssh_keys WHERE label = ?1 LIMIT 1")?;
+        let id = stmt.query_row(params![label], |row| row.get::<_, String>(0)).optional()?;
+        Ok(id)
+    }
+
+    pub fn delete_key(&self, id: &str, user_id: &str) -> anyhow::Result<()> {
+        let conn = self.conn.lock().unwrap();
+        // Don't allow deleting system keys (relay key has NULL user_id)
+        conn.execute("DELETE FROM ssh_keys WHERE id = ?1 AND user_id = ?2", params![id, user_id])?;
+        Ok(())
+    }
+
+    // --- Auth Tokens (with user_id) ---
+
+    pub fn store_token(&self, id: &str, user_id: &str, label: &str, token_hash: &str, device_type: Option<&str>) -> anyhow::Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO api_tokens (id, user_id, label, token_hash, device_type) VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![id, user_id, label, token_hash, device_type],
+        )?;
+        Ok(())
+    }
+
+    pub fn list_tokens(&self, user_id: &str) -> anyhow::Result<Vec<ApiToken>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
-            "SELECT id, label, device_type, last_used, created_at FROM api_tokens ORDER BY created_at DESC"
+            "SELECT id, label, device_type, last_used, created_at FROM api_tokens WHERE user_id = ?1 ORDER BY created_at DESC"
         )?;
-        let tokens = stmt.query_map([], |row| {
+        let tokens = stmt.query_map(params![user_id], |row| {
             Ok(ApiToken {
                 id: row.get(0)?,
                 label: row.get(1)?,
@@ -311,34 +423,12 @@ impl Database {
         Ok(tokens)
     }
 
-    pub fn get_token_hash(&self, id: &str) -> anyhow::Result<Option<String>> {
+    /// Returns (token_id, user_id) pairs for auth verification
+    pub fn all_token_hashes(&self) -> anyhow::Result<Vec<(String, String, String)>> {
         let conn = self.conn.lock().unwrap();
-        let hash: Option<String> = conn.query_row(
-            "SELECT token_hash FROM api_tokens WHERE id=?1", params![id], |r| r.get(0)
-        ).optional()?;
-        Ok(hash)
-    }
-
-    pub fn verify_token_by_hash(&self, token_hash: &str) -> anyhow::Result<Option<String>> {
-        let conn = self.conn.lock().unwrap();
-        // We need to iterate all tokens and verify against argon2
-        // This is handled in the auth module instead
-        let mut stmt = conn.prepare("SELECT id, token_hash FROM api_tokens")?;
-        let tokens: Vec<(String, String)> = stmt.query_map([], |row| {
-            Ok((row.get(0)?, row.get(1)?))
-        })?.collect::<Result<Vec<_>, _>>()?;
-        // Return all for the auth layer to verify
-        drop(stmt);
-        drop(conn);
-        // Actually this should be handled differently
-        Ok(None)
-    }
-
-    pub fn all_token_hashes(&self) -> anyhow::Result<Vec<(String, String)>> {
-        let conn = self.conn.lock().unwrap();
-        let mut stmt = conn.prepare("SELECT id, token_hash FROM api_tokens")?;
+        let mut stmt = conn.prepare("SELECT id, user_id, token_hash FROM api_tokens")?;
         let tokens = stmt.query_map([], |row| {
-            Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
+            Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?, row.get::<_, String>(2)?))
         })?.collect::<Result<Vec<_>, _>>()?;
         Ok(tokens)
     }
@@ -363,23 +453,30 @@ impl Database {
         Ok(())
     }
 
-    // --- Exec History ---
+    pub fn find_token_by_label(&self, label: &str) -> anyhow::Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare("SELECT id FROM api_tokens WHERE label = ?1 LIMIT 1")?;
+        let id = stmt.query_row(params![label], |row| row.get::<_, String>(0)).ok();
+        Ok(id)
+    }
 
-    pub fn record_execution(&self, entry: &ExecEntry) -> anyhow::Result<()> {
+    // --- Exec History (user-scoped) ---
+
+    pub fn record_execution(&self, entry: &ExecEntry, user_id: &str) -> anyhow::Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
-            "INSERT INTO exec_history (id, server_id, command_id, suite_id, command_text, exit_code, stdout, stderr, duration_ms, device) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
-            params![entry.id, entry.server_id, entry.command_id, entry.suite_id, entry.command_text, entry.exit_code, entry.stdout, entry.stderr, entry.duration_ms, entry.device],
+            "INSERT INTO exec_history (id, user_id, server_id, command_id, suite_id, command_text, exit_code, stdout, stderr, duration_ms, device) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            params![entry.id, user_id, entry.server_id, entry.command_id, entry.suite_id, entry.command_text, entry.exit_code, entry.stdout, entry.stderr, entry.duration_ms, entry.device],
         )?;
         Ok(())
     }
 
-    pub fn list_history(&self, limit: u32) -> anyhow::Result<Vec<ExecEntry>> {
+    pub fn list_history(&self, user_id: &str, limit: u32) -> anyhow::Result<Vec<ExecEntry>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
-            "SELECT id, server_id, command_id, suite_id, command_text, exit_code, stdout, stderr, duration_ms, device, created_at FROM exec_history ORDER BY created_at DESC LIMIT ?1"
+            "SELECT id, server_id, command_id, suite_id, command_text, exit_code, stdout, stderr, duration_ms, device, created_at FROM exec_history WHERE user_id = ?1 ORDER BY created_at DESC LIMIT ?2"
         )?;
-        let entries = stmt.query_map(params![limit], |row| {
+        let entries = stmt.query_map(params![user_id, limit], |row| {
             Ok(ExecEntry {
                 id: row.get(0)?,
                 server_id: row.get(1)?,
@@ -395,6 +492,30 @@ impl Database {
             })
         })?.collect::<Result<Vec<_>, _>>()?;
         Ok(entries)
+    }
+
+    pub fn get_history_entry(&self, id: &str, user_id: &str) -> anyhow::Result<Option<ExecEntry>> {
+        let conn = self.conn.lock().unwrap();
+        let entry = conn.query_row(
+            "SELECT id, server_id, command_id, suite_id, command_text, exit_code, stdout, stderr, duration_ms, device, created_at FROM exec_history WHERE id = ?1 AND user_id = ?2",
+            params![id, user_id],
+            |row| {
+                Ok(ExecEntry {
+                    id: row.get(0)?,
+                    server_id: row.get(1)?,
+                    command_id: row.get(2)?,
+                    suite_id: row.get(3)?,
+                    command_text: row.get(4)?,
+                    exit_code: row.get(5)?,
+                    stdout: row.get(6)?,
+                    stderr: row.get(7)?,
+                    duration_ms: row.get(8)?,
+                    device: row.get(9)?,
+                    created_at: row.get(10)?,
+                })
+            },
+        ).optional()?;
+        Ok(entry)
     }
 
     // --- Master passphrase ---
@@ -413,6 +534,55 @@ impl Database {
             "SELECT value FROM meta WHERE key='master_verify'", [], |r| r.get(0)
         ).optional()?;
         Ok(verify)
+    }
+
+    // --- Setup Tokens (user-scoped) ---
+
+    pub fn store_setup_token(&self, id: &str, user_id: &str, token: &str, expires_at: &str) -> anyhow::Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO setup_tokens (id, user_id, token, expires_at) VALUES (?1, ?2, ?3, ?4)",
+            params![id, user_id, token, expires_at],
+        )?;
+        Ok(())
+    }
+
+    pub fn validate_setup_token(&self, token: &str) -> anyhow::Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let result: Option<(String, String)> = conn.query_row(
+            "SELECT id, expires_at FROM setup_tokens WHERE token = ?1 AND used = 0",
+            params![token],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        ).optional()?;
+
+        match result {
+            Some((id, expires_at)) => {
+                let expires = chrono::DateTime::parse_from_rfc3339(&expires_at)
+                    .map_err(|e| anyhow::anyhow!("Invalid expiry: {}", e))?;
+                if chrono::Utc::now() > expires {
+                    Ok(None) // Expired
+                } else {
+                    Ok(Some(id))
+                }
+            }
+            None => Ok(None),
+        }
+    }
+
+    /// Consume a setup token and return (token_id, user_id)
+    pub fn consume_setup_token(&self, token: &str) -> anyhow::Result<Option<(String, String)>> {
+        // First validate
+        let id = self.validate_setup_token(token)?;
+        if let Some(ref id) = id {
+            let conn = self.conn.lock().unwrap();
+            // Get user_id before consuming
+            let user_id: String = conn.query_row(
+                "SELECT user_id FROM setup_tokens WHERE id = ?1", params![id], |r| r.get(0)
+            )?;
+            conn.execute("UPDATE setup_tokens SET used = 1 WHERE id = ?1", params![id])?;
+            return Ok(Some((id.clone(), user_id)));
+        }
+        Ok(None)
     }
 
     pub fn set_master_credentials(&self, salt: &[u8], verify: &[u8]) -> anyhow::Result<()> {
@@ -450,8 +620,16 @@ CREATE TABLE IF NOT EXISTS meta (
     value BLOB
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    id              TEXT PRIMARY KEY,
+    apple_user_id   TEXT UNIQUE,
+    email           TEXT,
+    created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS servers (
     id          TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL REFERENCES users(id),
     name        TEXT NOT NULL,
     host        TEXT NOT NULL,
     port        INTEGER NOT NULL DEFAULT 22,
@@ -466,6 +644,7 @@ CREATE TABLE IF NOT EXISTS servers (
 
 CREATE TABLE IF NOT EXISTS ssh_keys (
     id              TEXT PRIMARY KEY,
+    user_id         TEXT REFERENCES users(id),
     label           TEXT NOT NULL,
     encrypted_key   BLOB NOT NULL,
     public_key      TEXT NOT NULL,
@@ -502,6 +681,7 @@ CREATE TABLE IF NOT EXISTS suite_steps (
 
 CREATE TABLE IF NOT EXISTS api_tokens (
     id          TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL REFERENCES users(id),
     label       TEXT NOT NULL,
     token_hash  TEXT NOT NULL,
     device_type TEXT,
@@ -518,6 +698,7 @@ CREATE TABLE IF NOT EXISTS totp_secrets (
 
 CREATE TABLE IF NOT EXISTS exec_history (
     id           TEXT PRIMARY KEY,
+    user_id      TEXT NOT NULL REFERENCES users(id),
     server_id    TEXT NOT NULL,
     command_id   TEXT,
     suite_id     TEXT,
@@ -530,8 +711,18 @@ CREATE TABLE IF NOT EXISTS exec_history (
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS setup_tokens (
+    id          TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL REFERENCES users(id),
+    token       TEXT NOT NULL UNIQUE,
+    expires_at  TEXT NOT NULL,
+    used        BOOLEAN NOT NULL DEFAULT 0,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS apns_devices (
     id           TEXT PRIMARY KEY,
+    user_id      TEXT REFERENCES users(id),
     device_token TEXT NOT NULL,
     device_type  TEXT NOT NULL,
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))

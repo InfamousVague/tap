@@ -8,21 +8,32 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/"
   },
-  "keywords": ["react-native", "ui-kit", "design-system"],
+  "keywords": [
+    "react-native",
+    "ui-kit",
+    "design-system"
+  ],
   "author": "MattsSoftware",
   "license": "MIT",
   "peerDependencies": {
+    "@react-native-community/blur": ">=4.0.0",
+    "expo-haptics": ">=12.0.0",
+    "expo-linear-gradient": ">=12.0.0",
     "react": ">=18.0.0",
     "react-native": ">=0.72.0",
     "react-native-reanimated": ">=3.0.0",
-    "react-native-svg": ">=13.0.0",
-    "@react-native-community/blur": ">=4.0.0",
-    "expo-linear-gradient": ">=12.0.0",
-    "expo-haptics": ">=12.0.0"
+    "react-native-svg": ">=13.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
+    "@react-native-community/blur": "^4.4.1",
+    "@types/react": "^18.3.28",
     "@types/react-native": "^0.72.0",
+    "expo-haptics": "^55.0.14",
+    "expo-linear-gradient": "^55.0.13",
+    "react": "^19.2.5",
+    "react-native": "^0.85.0",
+    "react-native-reanimated": "^4.3.0",
+    "react-native-svg": "^15.15.4",
     "typescript": "^5.3.0"
   }
 }

@@ -136,7 +136,7 @@ impl SshPool {
         state: &AppState,
     ) -> anyhow::Result<(i32, String, String)> {
         // Get the SSH key for this server
-        let server = state.db.get_server(server_id)?
+        let server = state.db.get_server_system(server_id)?
             .ok_or_else(|| anyhow::anyhow!("Server not found"))?;
 
         let key_id = server.key_id
@@ -198,6 +198,7 @@ impl SshPool {
         let mut stdout = String::new();
         let mut stderr = String::new();
         let mut exit_code: i32 = -1;
+        let mut got_eof = false;
 
         let result = tokio::time::timeout(timeout, async {
             loop {
@@ -212,8 +213,13 @@ impl SshPool {
                     }
                     Some(ChannelMsg::ExitStatus { exit_status }) => {
                         exit_code = exit_status as i32;
+                        if got_eof { break; }
                     }
-                    Some(ChannelMsg::Eof) | None => break,
+                    Some(ChannelMsg::Eof) => {
+                        got_eof = true;
+                        if exit_code != -1 { break; }
+                    }
+                    None => break,
                     _ => {}
                 }
             }

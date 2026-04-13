@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const RELAY_URL_KEY = 'tap_relay_url';
 const TOKEN_KEY = 'tap_token';
+const RELAY_URL = 'https://tap.mattssoftware.com';
 
 // Types shared with relay
 export interface Server {
@@ -80,7 +81,7 @@ export interface ConfigResponse {
 class APIClient {
   private baseURL: string = '';
   private token: string = '';
-  private configured: boolean = false;
+  private _configured: boolean = false;
 
   async initialize(): Promise<boolean> {
     const url = await SecureStore.getItemAsync(RELAY_URL_KEY);
@@ -88,7 +89,7 @@ class APIClient {
     if (url && token) {
       this.baseURL = url.endsWith('/') ? url.slice(0, -1) : url;
       this.token = token;
-      this.configured = true;
+      this._configured = true;
       return true;
     }
     return false;
@@ -100,7 +101,7 @@ class APIClient {
     await SecureStore.setItemAsync(TOKEN_KEY, token);
     this.baseURL = cleanUrl;
     this.token = token;
-    this.configured = true;
+    this._configured = true;
   }
 
   async disconnect(): Promise<void> {
@@ -108,11 +109,24 @@ class APIClient {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     this.baseURL = '';
     this.token = '';
-    this.configured = false;
+    this._configured = false;
   }
 
-  isConfigured(): boolean {
-    return this.configured;
+  get isConfigured(): boolean {
+    return this._configured;
+  }
+
+  // Apple Sign In
+  async signInWithApple(identityToken: string, userIdentifier: string, email?: string): Promise<string> {
+    const res = await fetch(`${RELAY_URL}/auth/apple`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identity_token: identityToken, user_identifier: userIdentifier, email: email ?? '' }),
+    });
+    if (!res.ok) throw new APIError(res.status, await res.text());
+    const data = await res.json();
+    await this.configure(RELAY_URL, data.token);
+    return data.token;
   }
 
   // Config
@@ -126,7 +140,7 @@ class APIClient {
     return config.servers;
   }
 
-  async createServer(server: Omit<Server, 'id' | 'status' | 'latency_ms' | 'commands' | 'suites'>): Promise<{ id: string }> {
+  async createServer(server: { name: string; host: string; port: number; user: string; ssh_key_id?: string }): Promise<{ id: string }> {
     return this.post('/servers', server);
   }
 
@@ -142,12 +156,16 @@ class APIClient {
     return this.get(`/servers/${id}/ping`);
   }
 
+  async importSshConfig(): Promise<{ imported: number }> {
+    return this.post('/servers/import-ssh-config', {});
+  }
+
   // Commands
   async listCommands(serverId: string): Promise<Command[]> {
     return this.get(`/servers/${serverId}/commands`);
   }
 
-  async createCommand(serverId: string, cmd: Partial<Command>): Promise<{ id: string }> {
+  async createCommand(serverId: string, cmd: { label: string; command: string; confirm?: boolean; timeout_sec?: number; pinned?: boolean }): Promise<{ id: string }> {
     return this.post(`/servers/${serverId}/commands`, cmd);
   }
 
@@ -185,10 +203,6 @@ class APIClient {
     return this.del(`/keys/${id}`);
   }
 
-  async getPublicKey(id: string): Promise<{ id: string; public_key: string; key_type: string }> {
-    return this.get(`/keys/${id}/public`);
-  }
-
   // Templates
   async listTemplates(): Promise<{ templates: Template[] }> {
     return this.get('/templates');
@@ -210,15 +224,13 @@ class APIClient {
   }
 
   // Health
-  async healthCheck(): Promise<any> {
+  async healthCheck(): Promise<{ relay: string; version: string }> {
     return this.get('/health');
   }
 
   // Private helpers
   private async get<T>(path: string): Promise<T> {
-    const res = await fetch(`${this.baseURL}${path}`, {
-      headers: this.headers(),
-    });
+    const res = await fetch(`${this.baseURL}${path}`, { headers: this.headers() });
     if (!res.ok) throw new APIError(res.status, await res.text());
     return res.json();
   }
@@ -266,5 +278,4 @@ export class APIError extends Error {
   }
 }
 
-// Singleton
 export const api = new APIClient();
