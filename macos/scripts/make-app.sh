@@ -125,27 +125,14 @@ $ICON_KEY
 </plist>
 PLIST
 
-# Embed a Developer ID provisioning profile so SIWA works once
-# Tap.entitlements re-adds `com.apple.developer.applesignin`.
-# launchd's pre-launch check verifies the host's SIWA entitlement
-# against an embedded profile — without one the binary fails to
-# launch with POSIX 163 "Launchd job spawn failed".
-#
-# CRITICAL: the profile MUST be a Developer ID *distribution* type,
-# not a Development type. The Development profile that Xcode auto-
-# generates (with ProvisionedDevices, IsXcodeManaged) is signed
-# against Apple Development certs and embedding it under our
-# Developer-ID-signed binary is what triggered the 163 failure.
-#
-# To enable: developer.apple.com → Profiles → "+" → Developer ID
-# distribution → App ID `com.mattssoftware.tap.macos`. Download the
-# .provisionprofile, point PROVISION_PROFILE_PATH at it (or drop
-# it next to Tap.entitlements as Tap-DeveloperID.provisionprofile
-# and adjust the default below), and re-enable the applesignin key
-# in Tap.entitlements.
-#
-# Empty default = no profile is embedded; Tap launches but SIWA
-# stays unavailable (current shipping state).
+# Developer ID provisioning profile — kept as a parameterised
+# hook in case a future build needs to embed one. Currently
+# unused: Sign in with Apple is the only entitlement that would
+# benefit, and SIWA isn't supported on the Developer ID + non-
+# Mac-App-Store path (see Tap.entitlements for the full
+# investigation). Default empty = no profile embedded; pre-flight
+# the right .provisionprofile via PROVISION_PROFILE_PATH if/when
+# distribution moves to Mac App Store and SIWA becomes reachable.
 PROVISION_PROFILE_PATH="${PROVISION_PROFILE_PATH:-}"
 if [ -n "$PROVISION_PROFILE_PATH" ] && [ -f "$PROVISION_PROFILE_PATH" ]; then
   cp "$PROVISION_PROFILE_PATH" "$APP/Contents/embedded.provisionprofile"

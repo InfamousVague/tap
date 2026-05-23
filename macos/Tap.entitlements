@@ -10,26 +10,39 @@
   find the same container — App Groups are a separate registration
   from the primary bundle id.)
 
-  Sign in with Apple — TEMPORARILY REMOVED until a Developer ID
-  provisioning profile exists. The bundle id was renamed to
-  `com.mattssoftware.tap.macos` to ride the existing App ID at the
-  dev portal (which already has SIWA enabled), but the only
-  provisioning profile that's been generated for it is a
-  *Development* type (Xcode-managed, with ProvisionedDevices,
-  signed against Apple Development certs). Embedding a Development
-  profile under a Developer ID-signed binary makes launchd reject
-  it with POSIX 163 "Launchd job spawn failed".
+  Sign in with Apple — NOT achievable on this distribution path.
+  Confirmed via four separate provisioning-profile generations
+  (three through the portal, one via the App Store Connect API
+  with kid YRR5D454TC) that Apple's `MAC_APP_DIRECT` Developer ID
+  profile type *never* carries the applesignin entitlement in
+  its `Entitlements` dict, even when the App ID has APPLE_ID_AUTH
+  on as a primary. And amfid hard-rejects any Developer ID-
+  signed Mac binary that claims `com.apple.developer.applesignin`
+  unless an embedded profile authorizes it — with or without a
+  profile embedded, the binary fails to launch with POSIX 163
+  "Launchd job spawn failed". This is a platform constraint;
+  the only macOS distribution channel that does carry SIWA in
+  the profile entitlements is `MAC_APP_STORE` (i.e. the Mac App
+  Store), and that requires App Store Connect submission rather
+  than Developer ID + notarytool.
 
-  To restore SIWA:
-    1. developer.apple.com → Profiles → "+" → "Developer ID"
-       distribution → App ID `com.mattssoftware.tap.macos`
-    2. Download the .provisionprofile
-    3. Put its path in PROVISION_PROFILE_PATH for make-app.sh
-       (or drop it next to Tap.entitlements as
-        Tap-DeveloperID.provisionprofile and update the script)
-    4. Re-add the `com.apple.developer.applesignin = ["Default"]`
-       block below.
-    5. Rebuild + re-release.
+  Paths forward if SIWA on Tap-for-Mac becomes important:
+    A. Submit Tap to the Mac App Store. Profile type
+       `MAC_APP_STORE` (App Store profile) does carry the
+       applesignin entitlement; the cert is Apple Distribution
+       instead of Developer ID Application; release artefact is
+       a .pkg/.app uploaded to ASC instead of a .dmg.
+    B. Swap `ASAuthorizationAppleIDProvider` for an
+       `ASWebAuthenticationSession` flow against
+       `appleid.apple.com/auth/authorize`. Doesn't need the
+       platform entitlement, just regular OAuth from a web view.
+       Server side needs to handle the OAuth callback.
+    C. Use a non-Apple sign-in (Sign in with Google /
+       email + password) — sidesteps SIWA entirely.
+
+  Until one of those lands, stays out of the entitlements file
+  and the SignInView's button will fail with the SiwA error
+  1000 we've been seeing.
 
   NOT sandboxed: the SSH execute path goes through
   `tap.mattssoftware.com` over HTTPS but the host also stores the
