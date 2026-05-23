@@ -5,19 +5,31 @@
   App Group — write SharedTapState into the Group Container the
   TapWidgets.appex reads. ID must be team-prefixed
   (F6ZAL7ANAD.group.com.mattssoftware.tap) or containermanagerd
-  rejects access at runtime. (Group id stays `.tap`, not `.tap.macos`,
-  so the existing widget extension and the host find the same
-  container — App Groups are a separate registration from the
-  primary bundle id.)
+  rejects access at runtime. (Group id stays `.tap`, not
+  `.tap.macos`, so the existing widget extension and the host
+  find the same container — App Groups are a separate registration
+  from the primary bundle id.)
 
-  Sign in with Apple — required by `ASAuthorizationAppleIDProvider`.
-  This works because the host's CFBundleIdentifier was switched to
-  `com.mattssoftware.tap.macos`, which already has SIWA enabled at
-  developer.apple.com AND a Developer ID provisioning profile
-  generated for it. `scripts/make-app.sh` copies that profile into
-  `Contents/embedded.provisionprofile` so launchd's pre-launch
-  check accepts the entitlement (without an embedded profile, the
-  binary fails to launch with POSIX 163 "Launchd job spawn failed").
+  Sign in with Apple — TEMPORARILY REMOVED until a Developer ID
+  provisioning profile exists. The bundle id was renamed to
+  `com.mattssoftware.tap.macos` to ride the existing App ID at the
+  dev portal (which already has SIWA enabled), but the only
+  provisioning profile that's been generated for it is a
+  *Development* type (Xcode-managed, with ProvisionedDevices,
+  signed against Apple Development certs). Embedding a Development
+  profile under a Developer ID-signed binary makes launchd reject
+  it with POSIX 163 "Launchd job spawn failed".
+
+  To restore SIWA:
+    1. developer.apple.com → Profiles → "+" → "Developer ID"
+       distribution → App ID `com.mattssoftware.tap.macos`
+    2. Download the .provisionprofile
+    3. Put its path in PROVISION_PROFILE_PATH for make-app.sh
+       (or drop it next to Tap.entitlements as
+        Tap-DeveloperID.provisionprofile and update the script)
+    4. Re-add the `com.apple.developer.applesignin = ["Default"]`
+       block below.
+    5. Rebuild + re-release.
 
   NOT sandboxed: the SSH execute path goes through
   `tap.mattssoftware.com` over HTTPS but the host also stores the
@@ -31,10 +43,6 @@
   <key>com.apple.security.application-groups</key>
   <array>
     <string>F6ZAL7ANAD.group.com.mattssoftware.tap</string>
-  </array>
-  <key>com.apple.developer.applesignin</key>
-  <array>
-    <string>Default</string>
   </array>
 </dict>
 </plist>

@@ -125,24 +125,31 @@ $ICON_KEY
 </plist>
 PLIST
 
-# Embed the Mac Developer ID provisioning profile so SIWA works.
-# launchd's pre-launch check verifies the host's
-# `com.apple.developer.applesignin` entitlement against an embedded
-# profile — without one the binary fails to launch with POSIX 163
-# "Launchd job spawn failed", even when the entitlement is present
-# AND the dev portal has SIWA enabled for the App ID.
+# Embed a Developer ID provisioning profile so SIWA works once
+# Tap.entitlements re-adds `com.apple.developer.applesignin`.
+# launchd's pre-launch check verifies the host's SIWA entitlement
+# against an embedded profile — without one the binary fails to
+# launch with POSIX 163 "Launchd job spawn failed".
 #
-# The profile was created in Xcode for the TapMac.xcodeproj
-# variant (same `com.mattssoftware.tap.macos` bundle id we now use
-# for the SwiftPM build, so it covers this binary). Override
-# PROVISION_PROFILE_PATH if you regenerate it under a new UUID.
-PROVISION_PROFILE_PATH="${PROVISION_PROFILE_PATH:-$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/8363f039-9ae9-4d6b-8c5b-e81cd3240f6b.provisionprofile}"
-if [ -f "$PROVISION_PROFILE_PATH" ]; then
+# CRITICAL: the profile MUST be a Developer ID *distribution* type,
+# not a Development type. The Development profile that Xcode auto-
+# generates (with ProvisionedDevices, IsXcodeManaged) is signed
+# against Apple Development certs and embedding it under our
+# Developer-ID-signed binary is what triggered the 163 failure.
+#
+# To enable: developer.apple.com → Profiles → "+" → Developer ID
+# distribution → App ID `com.mattssoftware.tap.macos`. Download the
+# .provisionprofile, point PROVISION_PROFILE_PATH at it (or drop
+# it next to Tap.entitlements as Tap-DeveloperID.provisionprofile
+# and adjust the default below), and re-enable the applesignin key
+# in Tap.entitlements.
+#
+# Empty default = no profile is embedded; Tap launches but SIWA
+# stays unavailable (current shipping state).
+PROVISION_PROFILE_PATH="${PROVISION_PROFILE_PATH:-}"
+if [ -n "$PROVISION_PROFILE_PATH" ] && [ -f "$PROVISION_PROFILE_PATH" ]; then
   cp "$PROVISION_PROFILE_PATH" "$APP/Contents/embedded.provisionprofile"
-  echo "✓ embedded provisioning profile"
-else
-  echo "⚠ no provisioning profile at $PROVISION_PROFILE_PATH —"
-  echo "  Sign-in-with-Apple will fail to launch on a clean machine."
+  echo "✓ embedded provisioning profile from $PROVISION_PROFILE_PATH"
 fi
 
 # Inside-out codesign with hardened runtime. Sign in this exact
