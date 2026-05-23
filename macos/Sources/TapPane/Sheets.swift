@@ -309,6 +309,24 @@ struct CommandOutputView: View {
                 .background(Color.stashBgSecondary)
                 .cornerRadius(StashRadius.sm)
 
+            // Graphical render for known preset templates
+            // (disk usage ring, memory ring, CPU load tiles,
+            // service status pill, uptime hero, redis/pg/nginx
+            // ping cards). Dispatcher returns nil when the
+            // command isn't a recognised preset or the parser
+            // can't make sense of stdout — in either case we
+            // show the raw `AdhocOutputBlock` text below
+            // unchanged so nothing's lost. For recognised
+            // templates we keep the raw block too so the user
+            // can verify the parse + select the text if needed.
+            if let stdout = response.stdout,
+               !stdout.isEmpty,
+               let graphical = PresetOutputDispatcher.view(
+                    for: commandString, stdout: stdout) {
+                graphical
+                Divider().background(Color.stashBorder)
+            }
+
             AdhocOutputBlock(output: response)
 
             Spacer()
