@@ -31,10 +31,18 @@ struct CommandsView: View {
     let entry: TapEntry
 
     var body: some View {
-        switch family {
-        case .systemSmall:  CommandsSmallView(entry: entry)
-        case .systemMedium: CommandsMediumView(entry: entry)
-        default:            CommandsSmallView(entry: entry)
+        Group {
+            switch family {
+            case .systemSmall:  CommandsSmallView(entry: entry)
+            case .systemMedium: CommandsMediumView(entry: entry)
+            default:            CommandsSmallView(entry: entry)
+            }
         }
+        // Tap-anywhere fallback. Individual command tiles still
+        // own their AppIntent buttons (those take priority for
+        // taps directly on them); empty regions of the widget
+        // and the background route here to open the launcher
+        // already switched to Tap.
+        .widgetURL(URL(string: "mattssoftware://tap"))
     }
 }

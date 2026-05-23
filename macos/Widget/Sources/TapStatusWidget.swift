@@ -27,11 +27,20 @@ struct StatusView: View {
     let entry: TapEntry
 
     var body: some View {
-        switch family {
-        case .systemSmall:  StatusSmallView(entry: entry)
-        case .systemMedium: StatusMediumView(entry: entry)
-        default:            StatusSmallView(entry: entry)
+        Group {
+            switch family {
+            case .systemSmall:  StatusSmallView(entry: entry)
+            case .systemMedium: StatusMediumView(entry: entry)
+            default:            StatusSmallView(entry: entry)
+            }
         }
+        // Desktop-widget tap target. Routes to the MattsSoftware
+        // launcher's `application(_:open:)` handler which parses
+        // the host segment (`tap`) and pops the popover already
+        // switched to the Tap pane. Required because menu-bar
+        // agents don't surface UI on bundle-id launch — without
+        // a URL hook, tapping the widget appears to do nothing.
+        .widgetURL(URL(string: "mattssoftware://tap"))
     }
 }
 
