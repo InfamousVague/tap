@@ -6,10 +6,14 @@ import TapShared
 ///   • Signed in     → ServerListView (expandable server rows with
 ///                     commands underneath, plus footer actions)
 ///
-/// Width is fixed to 380pt — comfortable for two-column command
-/// rows and matches the visual proportion of the launcher's other
-/// panes. Height grows up to ~520pt, then internal scroll views
-/// take over.
+/// Width is 340pt to match every other merged pane and the
+/// launcher's unified popover envelope. Was 380pt up through
+/// v2.0.0, but the launcher consolidated everything to 340pt
+/// when the APPS grid shrank to 4×48pt tiles in launcher
+/// v0.2.19, so a 380pt Tap drew its content outside the
+/// popover chrome on the right side. Height matches the
+/// launcher's pane area (540 total minus tabs ≈ ours, kept at
+/// 540 since standalone NSPopover sizes to fit anyway).
 struct ContentView: View {
     @Environment(TapStore.self) private var store
 
@@ -21,7 +25,7 @@ struct ContentView: View {
                 SignInView()
             }
         }
-        .frame(width: 380, height: 520)
+        .frame(width: 340, height: 540)
         // No explicit background — let the launcher popover's
         // material (and the standalone NSPopover's translucent
         // chrome) show through, matching every other suite pane.

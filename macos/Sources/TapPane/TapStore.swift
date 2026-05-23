@@ -40,6 +40,16 @@ final class TapStore {
     /// Called by `paneStart()`: if a token is already on disk, sign
     /// the user in transparently and pull the latest config.
     func bootstrap() async {
+        // Wipe any leftover errorMessage before we start. If the
+        // last session ended with an error (the v2.0.0 → v2.1.0
+        // transition left "Apple Sign In failed: error 1000" stuck
+        // on the pane because nothing cleared it on the next
+        // bootstrap), a fresh boot should look fresh — not carry a
+        // red banner forward from a previous attempt. Successful
+        // loadConfig below leaves this nil; a fresh failure
+        // re-populates it with the current error.
+        errorMessage = nil
+
         if let token = keychain.getToken() {
             apiClient.setToken(token)
             isAuthenticated = true
