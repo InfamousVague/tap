@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Tap host entitlements.
+
+  App Group — write SharedTapState into the Group Container the
+  TapWidgets.appex reads. ID must be team-prefixed
+  (F6ZAL7ANAD.group.com.mattssoftware.tap) or containermanagerd
+  rejects access at runtime.
+
+  Sign in with Apple — required for `ASAuthorizationAppleIDProvider`
+  to issue a credential. Without this entitlement the SIWA flow
+  fails immediately with AuthenticationServices error 1000
+  (ASAuthorizationError.unknown). The bundle id
+  `com.mattssoftware.tap` must also have "Sign in with Apple"
+  enabled under its App ID at developer.apple.com — entitlement +
+  portal capability are both required; one without the other is
+  the same error.
+
+  NOT sandboxed: the SSH execute path goes through
+  `tap.mattssoftware.com` over HTTPS but the host also stores the
+  bearer token in the login Keychain, and SIWA's
+  `ASAuthorizationAppleIDProvider` plays nicer outside the sandbox.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>com.apple.security.application-groups</key>
+  <array>
+    <string>F6ZAL7ANAD.group.com.mattssoftware.tap</string>
+  </array>
+  <key>com.apple.developer.applesignin</key>
+  <array>
+    <string>Default</string>
+  </array>
+</dict>
+</plist>

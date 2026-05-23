@@ -3,7 +3,7 @@ import WidgetKit
 
 // MARK: - Server entity for widget configuration
 
-struct ServerAppEntity: AppEntity {
+struct ServerAppEntity: AppEntity, Sendable, Hashable {
     static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Server")
     static var defaultQuery = ServerEntityQuery()
 
@@ -20,8 +20,8 @@ struct ServerAppEntity: AppEntity {
 
 // MARK: - Query that reads available servers from shared UserDefaults
 
-struct ServerEntityQuery: EntityQuery {
-    private let defaults = UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp")
+struct ServerEntityQuery: EntityQuery, Sendable {
+    private var defaults: UserDefaults? { UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp") }
 
     func entities(for identifiers: [String]) async throws -> [ServerAppEntity] {
         let all = loadServers()
@@ -55,7 +55,7 @@ struct ServerEntityQuery: EntityQuery {
 
 // MARK: - Metric type for Fleet Metrics widget
 
-enum MetricType: String, AppEnum {
+enum MetricType: String, AppEnum, Sendable {
     case disk = "disk"
     case memory = "memory"
     case cpu = "cpu"

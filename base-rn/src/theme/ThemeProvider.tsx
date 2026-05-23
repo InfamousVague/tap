@@ -1,14 +1,20 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { useColorScheme } from 'react-native';
-import { Theme, ColorMode } from './types';
-import { lightTheme } from './lightTheme';
-import { darkTheme } from './darkTheme';
-import { spacing } from '../tokens/spacing';
-import { radius } from '../tokens/radius';
-import { shadows } from '../tokens/shadows';
-import { duration, easing, springConfig } from '../tokens/animation';
-import { glass } from '../tokens/glass';
-import { fontSize, lineHeight, fontWeight, fontFamily, textStyles } from '../tokens/typography';
+import {
+  spacing,
+  radius,
+  shadows,
+  duration,
+  easingValues,
+  springConfig,
+  fontSize,
+  lineHeight,
+  fontWeight,
+  textStyles,
+} from '@mattssoftware/base-tokens';
+import type { Theme, ColorMode } from './types';
+import { lightTheme, darkTheme } from './themes';
+import { fontFamily } from './fontFamily';
 
 export interface ThemeContextValue {
   theme: Theme;
@@ -16,8 +22,11 @@ export interface ThemeContextValue {
   spacing: typeof spacing;
   radius: typeof radius;
   shadows: typeof shadows;
-  animation: { duration: typeof duration; easing: typeof easing; springConfig: typeof springConfig };
-  glass: typeof glass;
+  animation: {
+    duration: typeof duration;
+    easingValues: typeof easingValues;
+    springConfig: typeof springConfig;
+  };
   typography: {
     fontSize: typeof fontSize;
     lineHeight: typeof lineHeight;
@@ -42,7 +51,9 @@ export function ThemeProvider({ children, defaultMode = 'system' }: ThemeProvide
 
   const resolvedMode: ColorMode =
     modeOverride === 'system'
-      ? (systemScheme === 'dark' ? 'dark' : 'light')
+      ? systemScheme === 'dark'
+        ? 'dark'
+        : 'light'
       : modeOverride;
 
   const theme = resolvedMode === 'dark' ? darkTheme : lightTheme;
@@ -53,16 +64,11 @@ export function ThemeProvider({ children, defaultMode = 'system' }: ThemeProvide
     spacing,
     radius,
     shadows,
-    animation: { duration, easing, springConfig },
-    glass,
+    animation: { duration, easingValues, springConfig },
     typography: { fontSize, lineHeight, fontWeight, fontFamily, textStyles },
     colorMode: resolvedMode,
     setColorMode: setModeOverride,
   };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

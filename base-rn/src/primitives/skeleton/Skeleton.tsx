@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ViewStyle } from 'react-native';
+import { ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -12,7 +12,7 @@ import { useTheme } from '../../theme';
 export interface SkeletonProps {
   width?: number | string;
   height?: number | string;
-  radius?: number;
+  borderRadius?: number;
   circle?: boolean;
   style?: ViewStyle;
 }
@@ -20,7 +20,7 @@ export interface SkeletonProps {
 export function Skeleton({
   width = '100%',
   height = 20,
-  radius: radiusProp,
+  borderRadius: borderRadiusProp,
   circle = false,
   style,
 }: SkeletonProps) {
@@ -28,11 +28,7 @@ export function Skeleton({
   const shimmer = useSharedValue(0);
 
   useEffect(() => {
-    shimmer.value = withRepeat(
-      withTiming(1, { duration: 1200 }),
-      -1,
-      false
-    );
+    shimmer.value = withRepeat(withTiming(1, { duration: 1200 }), -1, false);
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -49,7 +45,7 @@ export function Skeleton({
         {
           width: (circle ? size : width) as number | undefined,
           height: (circle ? size : height) as number | undefined,
-          borderRadius: circle ? (size! / 2) : (radiusProp ?? radius.md),
+          borderRadius: circle ? (size! / 2) : (borderRadiusProp ?? radius.md),
           backgroundColor: colors.bgMuted,
         },
         style,

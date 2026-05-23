@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { duration } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
 import { Text } from '../text';
-import { duration } from '../../tokens/animation';
 
 export interface CollapsibleProps {
   title: string;
@@ -41,11 +41,7 @@ export function Collapsible({ title, defaultOpen = false, children }: Collapsibl
         </Animated.View>
         <Text variant="bodyMedium">{title}</Text>
       </Pressable>
-      {open && (
-        <View style={{ paddingLeft: spacing[6] }}>
-          {children}
-        </View>
-      )}
+      {open && <View style={{ paddingLeft: spacing[6] }}>{children}</View>}
     </View>
   );
 }

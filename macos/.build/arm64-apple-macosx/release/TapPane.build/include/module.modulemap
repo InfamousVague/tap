@@ -1,0 +1,3 @@
+module TapPane {
+    header "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/include/TapPane-Swift.h"
+}

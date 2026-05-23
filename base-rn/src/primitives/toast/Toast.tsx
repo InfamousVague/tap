@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { View, Pressable, ViewStyle } from 'react-native';
+import { View, Pressable } from 'react-native';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useTheme } from '../../theme';
 import { Text } from '../text';
@@ -36,12 +36,12 @@ export function Toaster({ children }: ToasterProps) {
 
   const addToast = useCallback((item: Omit<ToastItem, 'id'>) => {
     const id = Math.random().toString(36).slice(2);
-    const toast = { ...item, id };
+    const toast: ToastItem = { ...item, id };
     setToasts((prev) => [...prev, toast]);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, item.duration || 3000);
+    }, item.duration ?? 3000);
   }, []);
 
   const dismiss = (id: string) => {
@@ -91,8 +91,10 @@ export function Toaster({ children }: ToasterProps) {
             >
               <View style={{ flex: 1 }}>
                 <Text variant="bodyMedium">{t.title}</Text>
-                {t.message && (
-                  <Text variant="caption" color={colors.textSubtle}>{t.message}</Text>
+                {t.message != null && (
+                  <Text variant="caption" color={colors.textSubtle}>
+                    {t.message}
+                  </Text>
                 )}
               </View>
             </Pressable>

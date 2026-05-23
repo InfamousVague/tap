@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 @MainActor
 class AppState: ObservableObject {
@@ -138,6 +139,7 @@ class AppState: ObservableObject {
 
         defaults.set(Date().timeIntervalSince1970, forKey: "widget_last_updated")
         defaults.synchronize()
+        WidgetCenter.shared.reloadAllTimelines()
         print("[Tap] Widget sync: \(total) total, \(up) up, \(down) down")
     }
 
@@ -176,6 +178,7 @@ class AppState: ObservableObject {
             defaults.set(data, forKey: "widget_overviews")
         }
         defaults.synchronize()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func executeCommand(serverId: String, commandId: String) async -> ExecResult? {
@@ -191,8 +194,21 @@ class AppState: ObservableObject {
         }
     }
 
+    func deleteAccount() async {
+        guard let client = apiClient else { return }
+        do {
+            try await client.deleteAccount()
+            disconnect()
+            HapticService.shared.play(.success)
+        } catch {
+            self.error = error.localizedDescription
+            HapticService.shared.play(.failure)
+        }
+    }
+
     func pingServer(serverId: String) async -> PingResult? {
         guard let client = apiClient else { return nil }
         return try? await client.ping(serverId: serverId)
     }
+
 }

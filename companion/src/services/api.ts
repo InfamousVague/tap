@@ -1,4 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
+import { MOCK_SERVERS, MOCK_HISTORY, MOCK_KEYS } from './mockData';
+
+const MOCK_MODE = __DEV__ && false; // Toggle for screenshots
 
 const RELAY_URL_KEY = 'tap_relay_url';
 const TOKEN_KEY = 'tap_token';
@@ -84,6 +87,10 @@ class APIClient {
   private _configured: boolean = false;
 
   async initialize(): Promise<boolean> {
+    if (MOCK_MODE) {
+      this._configured = true;
+      return true;
+    }
     const url = await SecureStore.getItemAsync(RELAY_URL_KEY);
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     if (url && token) {
@@ -113,6 +120,7 @@ class APIClient {
   }
 
   get isConfigured(): boolean {
+    if (MOCK_MODE) return true;
     return this._configured;
   }
 
@@ -136,6 +144,7 @@ class APIClient {
 
   // Servers
   async listServers(): Promise<Server[]> {
+    if (MOCK_MODE) return MOCK_SERVERS;
     const config = await this.getConfig();
     return config.servers;
   }
@@ -188,6 +197,7 @@ class APIClient {
 
   // SSH Keys
   async listKeys(): Promise<SshKeyMeta[]> {
+    if (MOCK_MODE) return MOCK_KEYS;
     return this.get('/keys');
   }
 
@@ -214,6 +224,7 @@ class APIClient {
 
   // History
   async listHistory(limit?: number): Promise<ExecHistoryEntry[]> {
+    if (MOCK_MODE) return MOCK_HISTORY.slice(0, limit ?? MOCK_HISTORY.length);
     const params = limit ? `?limit=${limit}` : '';
     return this.get(`/history${params}`);
   }
@@ -223,8 +234,13 @@ class APIClient {
     return this.post('/auth/token', { label, device_type: deviceType });
   }
 
+  async deleteAccount(): Promise<void> {
+    return this.del('/auth/user');
+  }
+
   // Health
   async healthCheck(): Promise<{ relay: string; version: string }> {
+    if (MOCK_MODE) return { relay: 'ok', version: '2.4.1' };
     return this.get('/health');
   }
 

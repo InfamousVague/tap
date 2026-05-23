@@ -1,0 +1,13 @@
+{
+  "": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/Tap.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/Tap.o",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/Tap/TapApp.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/TapApp.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/TapApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/TapApp.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/Tap.build/TapApp.dia"
+  }
+}

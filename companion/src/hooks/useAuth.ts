@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { api } from '../services/api';
 
+const MOCK_MODE = __DEV__ && false; // Toggle for screenshots
+
 interface AuthState {
   isReady: boolean;
   isAuthenticated: boolean;
@@ -24,6 +26,11 @@ export function useAuthProvider(): AuthState {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    if (MOCK_MODE) {
+      setIsAuthenticated(true);
+      setIsReady(true);
+      return;
+    }
     api.initialize().then((configured) => {
       setIsAuthenticated(configured);
       setIsReady(true);

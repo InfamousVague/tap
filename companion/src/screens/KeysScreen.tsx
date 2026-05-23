@@ -12,12 +12,17 @@ import * as Clipboard from 'expo-clipboard';
 
 export function KeysScreen() {
   const { colors, spacing } = useTheme();
-  const { data: keys, loading, refetch } = useQuery(() => api.listKeys(), []);
+  const { data: keys, loading, error, refetch } = useQuery(() => api.listKeys(), []);
   const [showGenerate, setShowGenerate] = useState(false);
   const [newKeyLabel, setNewKeyLabel] = useState('');
   const [generating, setGenerating] = useState(false);
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Show toast on fetch error
+  React.useEffect(() => {
+    if (error) toast({ type: 'error', title: 'Failed to load keys', message: error });
+  }, [error]);
 
   const generateKey = async () => {
     if (!newKeyLabel.trim()) return;
@@ -46,10 +51,14 @@ export function KeysScreen() {
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
-          await api.deleteKey(key.id);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          toast({ type: 'success', title: `Key "${key.label}" deleted` });
-          refetch();
+          try {
+            await api.deleteKey(key.id);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            toast({ type: 'success', title: `Key "${key.label}" deleted` });
+            refetch();
+          } catch (e: any) {
+            toast({ type: 'error', title: 'Failed to delete key', message: e.message });
+          }
         },
       },
     ]);
@@ -72,16 +81,25 @@ export function KeysScreen() {
           <Text variant="label" color={colors.textMuted}>
             {keys?.length ?? 0} keys
           </Text>
-          <Button variant="primary" size="sm" onPress={() => setShowGenerate(true)}>
-            <HStack gap={1} align="center">
-              <Icon svg={icons.plus} size={14} color="white" />
-              <Text variant="caption" color="white">Generate</Text>
-            </HStack>
+          <Button variant="primary" size="sm" onPress={() => setShowGenerate(true)}
+            icon={<Icon svg={icons.plus} size={14} color="#fff" />}
+          >
+            Generate
           </Button>
         </HStack>
 
         {loading && !keys ? (
           <VStack gap={2}><Skeleton height={72} /><Skeleton height={72} /></VStack>
+        ) : error && !keys ? (
+          <Card variant="outline" padding="lg">
+            <VStack align="center" gap={2}>
+              <Icon svg={icons.alertTriangle} size={32} color={colors.error} />
+              <Text variant="body" color={colors.error} align="center">Failed to load keys</Text>
+              <Text variant="caption" color={colors.textMuted} align="center">
+                Pull down to retry.
+              </Text>
+            </VStack>
+          </Card>
         ) : keys?.length === 0 ? (
           <Card variant="outline" padding="lg">
             <VStack align="center" gap={3}>
@@ -107,24 +125,22 @@ export function KeysScreen() {
                     </Badge>
                   </HStack>
 
-                  <Card variant="filled" padding="sm">
+                  <HStack style={{ backgroundColor: colors.bgMuted, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 }}>
                     <Text variant="caption" color={colors.textMuted} mono numberOfLines={1}>
                       {key.public_key}
                     </Text>
-                  </Card>
+                  </HStack>
 
                   <HStack gap={2}>
-                    <Button variant="ghost" size="sm" onPress={() => copyKey(key.public_key)}>
-                      <HStack gap={1} align="center">
-                        <Icon svg={icons.copy} size={14} color={amber[500]} />
-                        <Text variant="caption" color={amber[500]}>Copy</Text>
-                      </HStack>
+                    <Button variant="secondary" size="sm" style={{ backgroundColor: colors.bgMuted, borderWidth: 0 }} onPress={() => copyKey(key.public_key)}
+                      icon={<Icon svg={icons.copy} size={14} color={colors.textMuted} />}
+                    >
+                      Copy
                     </Button>
-                    <Button variant="ghost" size="sm" onPress={() => deleteKey(key)}>
-                      <HStack gap={1} align="center">
-                        <Icon svg={icons.trash} size={14} color={colors.error} />
-                        <Text variant="caption" color={colors.error}>Delete</Text>
-                      </HStack>
+                    <Button variant="secondary" intent="error" size="sm" style={{ borderWidth: 0 }} onPress={() => deleteKey(key)}
+                      icon={<Icon svg={icons.trash} size={14} color={colors.error} />}
+                    >
+                      Delete
                     </Button>
                   </HStack>
                 </VStack>

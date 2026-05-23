@@ -1,0 +1,19 @@
+{
+  "": {
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuiteGuard.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.dia"
+  },
+  "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuitePane.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.dia"
+  }
+}

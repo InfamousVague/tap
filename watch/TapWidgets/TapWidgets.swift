@@ -5,9 +5,9 @@ import SwiftUI
 struct TapWidgetBundle: WidgetBundle {
     var body: some Widget {
         ServerStatusWidget()
+        QuickCommandWidget()
         FleetMetricsWidget()
         DockerWidget()
         UptimeWidget()
-        QuickCommandWidget()
     }
 }

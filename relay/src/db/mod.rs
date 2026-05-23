@@ -59,6 +59,21 @@ impl Database {
         Ok(id)
     }
 
+    pub fn delete_user(&self, user_id: &str) -> anyhow::Result<()> {
+        let conn = self.conn.lock().unwrap();
+        // Delete in dependency order (foreign keys don't all cascade)
+        conn.execute("DELETE FROM server_alert_prefs WHERE device_id IN (SELECT id FROM apns_devices WHERE user_id = ?1)", params![user_id])?;
+        conn.execute("DELETE FROM apns_devices WHERE user_id = ?1", params![user_id])?;
+        conn.execute("DELETE FROM setup_tokens WHERE user_id = ?1", params![user_id])?;
+        conn.execute("DELETE FROM exec_history WHERE user_id = ?1", params![user_id])?;
+        conn.execute("DELETE FROM ssh_keys WHERE user_id = ?1", params![user_id])?;
+        conn.execute("DELETE FROM api_tokens WHERE user_id = ?1", params![user_id])?;
+        // Servers cascade to commands, suites, suite_steps
+        conn.execute("DELETE FROM servers WHERE user_id = ?1", params![user_id])?;
+        conn.execute("DELETE FROM users WHERE id = ?1", params![user_id])?;
+        Ok(())
+    }
+
     // --- Servers (user-scoped) ---
 
     pub fn server_count(&self, user_id: &str) -> anyhow::Result<usize> {
@@ -303,6 +318,21 @@ impl Database {
             params![id, suite.server_id, suite.label],
         )?;
         Ok(id)
+    }
+
+    pub fn get_suite(&self, id: &str) -> anyhow::Result<Option<Suite>> {
+        let conn = self.conn.lock().unwrap();
+        let suite = conn.query_row(
+            "SELECT id, server_id, label, created_at FROM suites WHERE id = ?1",
+            params![id],
+            |row| Ok(Suite {
+                id: row.get(0)?,
+                server_id: row.get(1)?,
+                label: row.get(2)?,
+                created_at: row.get(3)?,
+            }),
+        ).optional()?;
+        Ok(suite)
     }
 
     pub fn delete_suite(&self, id: &str) -> anyhow::Result<()> {
@@ -583,6 +613,33 @@ impl Database {
             return Ok(Some((id.clone(), user_id)));
         }
         Ok(None)
+    }
+
+    // --- APNs Device Tokens ---
+
+    pub fn register_apns_device(&self, id: &str, user_id: &str, device_token: &str, device_type: &str) -> anyhow::Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO apns_devices (id, user_id, device_token, device_type) VALUES (?1, ?2, ?3, ?4)",
+            params![id, user_id, device_token, device_type],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_apns_tokens_for_user(&self, user_id: &str) -> anyhow::Result<Vec<String>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare("SELECT device_token FROM apns_devices WHERE user_id = ?1")?;
+        let tokens = stmt.query_map(params![user_id], |row| row.get::<_, String>(0))?
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(tokens)
+    }
+
+    pub fn get_server_owner(&self, server_id: &str) -> anyhow::Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let user_id: Option<String> = conn.query_row(
+            "SELECT user_id FROM servers WHERE id = ?1", params![server_id], |r| r.get(0)
+        ).optional()?;
+        Ok(user_id)
     }
 
     pub fn set_master_credentials(&self, salt: &[u8], verify: &[u8]) -> anyhow::Result<()> {

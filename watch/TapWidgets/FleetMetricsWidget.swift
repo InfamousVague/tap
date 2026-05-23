@@ -4,7 +4,7 @@ import AppIntents
 
 // MARK: - Shared data model (must match what the app writes)
 
-struct WidgetOverview: Codable {
+struct WidgetOverview: Codable, Sendable {
     let serverId: String
     let serverName: String
     let status: String
@@ -20,7 +20,7 @@ struct WidgetOverview: Codable {
 
 // MARK: - Configuration Intent
 
-struct FleetMetricsIntent: WidgetConfigurationIntent {
+struct FleetMetricsIntent: WidgetConfigurationIntent, Sendable {
     static var title: LocalizedStringResource = "Fleet Metrics"
     static var description = IntentDescription("View disk, memory, or CPU metrics for a server or your whole fleet.")
 
@@ -34,7 +34,7 @@ struct FleetMetricsIntent: WidgetConfigurationIntent {
 // MARK: - Fleet Metrics Widget
 
 struct FleetMetricsProvider: AppIntentTimelineProvider {
-    private let defaults = UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp")
+    private var defaults: UserDefaults? { UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp") }
 
     func placeholder(in context: Context) -> FleetMetricsEntry {
         FleetMetricsEntry(date: .now, metric: .disk, serverName: nil, value: 45, overviews: [

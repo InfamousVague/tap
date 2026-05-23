@@ -84,13 +84,55 @@ pub async fn health_loop(state: Arc<AppState>) {
                 tracing::error!("Failed to update server status: {}", e);
             }
 
-            // Log status changes
+            // Notify on status changes
             if prev_status == "up" && status == "down" {
                 tracing::warn!("Server {} ({}) went DOWN", server.name, server.host);
-                // TODO: Send APNs notification
+                send_status_notification(&state, &server.id, &server.name, false).await;
             } else if prev_status == "down" && status == "up" {
                 tracing::info!("Server {} ({}) is back UP", server.name, server.host);
+                send_status_notification(&state, &server.id, &server.name, true).await;
             }
+        }
+    }
+}
+
+/// Send APNs push notification when server status changes.
+/// Looks up the server owner, fetches their device tokens, and sends to all.
+async fn send_status_notification(state: &AppState, server_id: &str, server_name: &str, is_up: bool) {
+    let apns = match &state.apns {
+        Some(a) => a,
+        None => return, // APNs not configured
+    };
+
+    let user_id = match state.db.get_server_owner(server_id) {
+        Ok(Some(uid)) => uid,
+        Ok(None) => {
+            tracing::warn!("No owner found for server {}", server_id);
+            return;
+        }
+        Err(e) => {
+            tracing::error!("Failed to get server owner: {}", e);
+            return;
+        }
+    };
+
+    let tokens = match state.db.get_apns_tokens_for_user(&user_id) {
+        Ok(t) => t,
+        Err(e) => {
+            tracing::error!("Failed to get APNs tokens for user {}: {}", &user_id, e);
+            return;
+        }
+    };
+
+    for token in &tokens {
+        let result = if is_up {
+            apns.send_server_up_alert(token, server_name).await
+        } else {
+            apns.send_server_down_alert(token, server_name).await
+        };
+
+        if let Err(e) = result {
+            tracing::error!("Failed to send APNs notification to {}: {}", &token[..8.min(token.len())], e);
         }
     }
 }

@@ -1,0 +1,3 @@
+module SuiteKit {
+    header "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/include/SuiteKit-Swift.h"
+}

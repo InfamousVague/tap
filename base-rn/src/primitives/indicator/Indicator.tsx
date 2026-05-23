@@ -1,11 +1,16 @@
-import React from 'react';
-import { View, ViewStyle } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import React, { useEffect } from 'react';
+import { ViewStyle } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { useTheme } from '../../theme';
 
 export interface IndicatorProps {
-  status: 'up' | 'down' | 'unknown' | 'warning';
-  size?: 'sm' | 'md' | 'lg';
+  status: 'up' | 'down' | 'unknown';
+  size?: 'sm' | 'md';
   pulse?: boolean;
   style?: ViewStyle;
 }
@@ -19,13 +24,9 @@ export function Indicator({
   const { colors } = useTheme();
   const opacity = useSharedValue(1);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (pulse && status === 'up') {
-      opacity.value = withRepeat(
-        withTiming(0.4, { duration: 1000 }),
-        -1,
-        true
-      );
+      opacity.value = withRepeat(withTiming(0.4, { duration: 1000 }), -1, true);
     } else {
       opacity.value = 1;
     }
@@ -35,14 +36,13 @@ export function Indicator({
     opacity: opacity.value,
   }));
 
-  const sizeMap = { sm: 8, md: 10, lg: 14 };
+  const sizeMap = { sm: 8, md: 10 };
   const s = sizeMap[size];
 
   const colorMap = {
     up: colors.success,
     down: colors.error,
     unknown: colors.textMuted,
-    warning: colors.warning,
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import {
-  useTheme, VStack, HStack, Text, Card, Badge, Skeleton, Icon, icons,
+  useTheme, VStack, HStack, Text, Card, Badge, Skeleton, Icon, icons, useToast,
 } from '@mattssoftware/base-rn';
 import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
 import { api, ExecHistoryEntry } from '../services/api';
@@ -20,7 +20,13 @@ function relativeTime(dateStr: string | null): string {
 
 export function HistoryScreen() {
   const { colors, spacing } = useTheme();
-  const { data: history, loading, refetch } = useQuery(() => api.listHistory(50), []);
+  const { data: history, loading, error, refetch } = useQuery(() => api.listHistory(50), []);
+  const { toast } = useToast();
+
+  // Show toast on fetch error
+  React.useEffect(() => {
+    if (error) toast({ type: 'error', title: 'Failed to load history', message: error });
+  }, [error]);
 
   return (
     <ScrollView
@@ -35,6 +41,16 @@ export function HistoryScreen() {
 
         {loading && !history ? (
           <VStack gap={2}><Skeleton height={60} /><Skeleton height={60} /><Skeleton height={60} /></VStack>
+        ) : error && !history ? (
+          <Card variant="outline" padding="lg">
+            <VStack align="center" gap={2}>
+              <Icon svg={icons.alertTriangle} size={32} color={colors.error} />
+              <Text variant="body" color={colors.error} align="center">Failed to load history</Text>
+              <Text variant="caption" color={colors.textMuted} align="center">
+                Pull down to retry.
+              </Text>
+            </VStack>
+          </Card>
         ) : history?.length === 0 ? (
           <Card variant="outline" padding="lg">
             <VStack align="center" gap={2}>

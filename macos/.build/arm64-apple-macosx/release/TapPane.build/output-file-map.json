@@ -1,0 +1,73 @@
+{
+  "": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapPane.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapPane.o",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/APIClient.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/APIClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/APIClient.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/APIClient.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/CommandPresets.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/CommandPresets~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/CommandPresets.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/CommandPresets.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ContentView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ContentView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ContentView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/KeychainService.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/KeychainService~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/KeychainService.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/KeychainService.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Models.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Models~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Models.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Models.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Plugin.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Plugin~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Plugin.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Plugin.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ServerListView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ServerListView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ServerListView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/ServerListView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Sheets.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Sheets~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Sheets.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Sheets.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/SignInView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/SignInView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/SignInView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/SignInView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapStore.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapStore~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapStore.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/TapStore.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Theme.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Theme~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Theme.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapPane.build/Theme.dia"
+  }
+}

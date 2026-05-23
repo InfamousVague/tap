@@ -14,7 +14,7 @@ export function Spinner({ size = 'md', color, style, ...props }: SpinnerProps) {
   return (
     <ActivityIndicator
       size={sizeMap[size]}
-      color={color || colors.accent}
+      color={color ?? colors.accent}
       style={style}
       {...props}
     />

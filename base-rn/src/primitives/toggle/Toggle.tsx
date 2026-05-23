@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, ViewStyle } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, interpolateColor } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  interpolateColor,
+} from 'react-native-reanimated';
+import { springConfig } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
-import { springConfig } from '../../tokens/animation';
 
 export interface ToggleProps {
   value: boolean;
   onValueChange: (value: boolean) => void;
   disabled?: boolean;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   style?: ViewStyle;
 }
 
@@ -22,23 +27,20 @@ export function Toggle({
   const { colors } = useTheme();
   const progress = useSharedValue(value ? 1 : 0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     progress.value = withSpring(value ? 1 : 0, springConfig.snappy);
   }, [value]);
 
   const sizes = {
-    sm: { width: 40, height: 24, knob: 18, padding: 3 },
+    sm: { width: 36, height: 22, knob: 16, padding: 3 },
     md: { width: 50, height: 30, knob: 24, padding: 3 },
+    lg: { width: 60, height: 36, knob: 28, padding: 4 },
   };
 
   const s = sizes[size];
 
   const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      progress.value,
-      [0, 1],
-      [colors.bgMuted, colors.accent]
-    ),
+    backgroundColor: interpolateColor(progress.value, [0, 1], [colors.bgMuted, colors.accent]),
   }));
 
   const knobStyle = useAnimatedStyle(() => ({
@@ -70,7 +72,7 @@ export function Toggle({
               height: s.knob,
               borderRadius: s.knob / 2,
               backgroundColor: '#ffffff',
-              shadowColor: '#000',
+              shadowColor: '#000000',
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: 0.15,
               shadowRadius: 2,

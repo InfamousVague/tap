@@ -1,13 +1,13 @@
 import React from 'react';
 import { Pressable, View, ViewStyle } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { springConfig } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
 import { Text } from '../text';
-import { springConfig } from '../../tokens/animation';
 
 export interface CheckboxProps {
   checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
+  onChange: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
   style?: ViewStyle;
@@ -15,9 +15,9 @@ export interface CheckboxProps {
 
 export function Checkbox({
   checked,
-  onCheckedChange,
+  onChange,
   label,
-  disabled,
+  disabled = false,
   style,
 }: CheckboxProps) {
   const { colors, radius, spacing } = useTheme();
@@ -33,13 +33,21 @@ export function Checkbox({
     setTimeout(() => {
       scale.value = withSpring(1, springConfig.gentle);
     }, 100);
-    onCheckedChange(!checked);
+    onChange(!checked);
   };
 
   return (
     <Pressable
       onPress={handlePress}
-      style={[{ flexDirection: 'row', alignItems: 'center', gap: spacing[2], opacity: disabled ? 0.5 : 1 }, style]}
+      style={[
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: spacing[2],
+          opacity: disabled ? 0.5 : 1,
+        },
+        style,
+      ]}
     >
       <Animated.View
         style={[
@@ -57,10 +65,19 @@ export function Checkbox({
         ]}
       >
         {checked && (
-          <Text style={{ color: '#000', fontSize: 14, fontWeight: '700', marginTop: -1 }}>✓</Text>
+          <Text
+            style={{
+              color: '#000000',
+              fontSize: 14,
+              fontWeight: '700',
+              marginTop: -1,
+            }}
+          >
+            ✓
+          </Text>
         )}
       </Animated.View>
-      {label && <Text variant="body">{label}</Text>}
+      {label != null && <Text variant="body">{label}</Text>}
     </Pressable>
   );
 }

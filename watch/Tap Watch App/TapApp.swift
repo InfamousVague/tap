@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 @main
 struct TapApp: App {
@@ -12,6 +13,9 @@ struct TapApp: App {
                     // Mirror keychain credentials to shared UserDefaults
                     // so the widget extension can access them
                     KeychainService.shared.syncToSharedDefaults()
+
+                    // Tell WidgetKit to discover and reload all complications
+                    WidgetCenter.shared.reloadAllTimelines()
                 }
         }
     }

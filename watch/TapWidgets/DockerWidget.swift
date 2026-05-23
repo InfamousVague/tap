@@ -4,7 +4,7 @@ import AppIntents
 
 // MARK: - Docker Status Widget
 
-struct DockerIntent: WidgetConfigurationIntent {
+struct DockerIntent: WidgetConfigurationIntent, Sendable {
     static var title: LocalizedStringResource = "Docker Status"
     static var description = IntentDescription("View Docker container status for a specific server or all servers.")
 
@@ -13,7 +13,7 @@ struct DockerIntent: WidgetConfigurationIntent {
 }
 
 struct DockerProvider: AppIntentTimelineProvider {
-    private let defaults = UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp")
+    private var defaults: UserDefaults? { UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp") }
 
     func placeholder(in context: Context) -> DockerEntry {
         DockerEntry(date: .now, serverName: nil, running: 8, total: 10, servers: [

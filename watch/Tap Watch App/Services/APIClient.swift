@@ -38,6 +38,13 @@ actor APIClient {
         return try await post("/exec", body: body)
     }
 
+    // MARK: - Account
+
+    func deleteAccount() async throws {
+        let (_, response) = try await request("DELETE", path: "/auth/user")
+        try validateResponse(response)
+    }
+
     // MARK: - Health
 
     func ping(serverId: String) async throws -> PingResult {

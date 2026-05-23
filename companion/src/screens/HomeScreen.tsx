@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import {
-  useTheme, VStack, HStack, Text, Card, Badge, Indicator, Skeleton, Icon, icons,
+  useTheme, VStack, HStack, Text, Card, Badge, Indicator, Skeleton, Icon, icons, useToast,
 } from '@mattssoftware/base-rn';
 import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
 import { api, Server } from '../services/api';
@@ -9,7 +9,13 @@ import { useQuery } from '../hooks/useApi';
 
 export function HomeScreen() {
   const { colors, spacing } = useTheme();
-  const { data: servers, loading, refetch } = useQuery(() => api.listServers(), []);
+  const { data: servers, loading, error, refetch } = useQuery(() => api.listServers(), []);
+  const { toast } = useToast();
+
+  // Show toast on fetch error
+  React.useEffect(() => {
+    if (error) toast({ type: 'error', title: 'Failed to load servers', message: error });
+  }, [error]);
 
   const upCount = servers?.filter(s => s.status === 'up').length ?? 0;
   const downCount = servers?.filter(s => s.status === 'down').length ?? 0;
@@ -23,19 +29,19 @@ export function HomeScreen() {
     >
       <VStack gap={4}>
         {/* Status summary card */}
-        <Card variant="filled" padding="md">
+        <Card style={{ backgroundColor: '#000', borderRadius: 16 }} padding="md">
           <HStack gap={4} justify="space-around">
             <VStack align="center" gap={1}>
-              <Text variant="display" color={colors.success}>{loading ? '-' : upCount}</Text>
-              <Text variant="caption" color={colors.textMuted}>Online</Text>
+              <Text variant="display" color="#4ade80">{loading ? '-' : upCount}</Text>
+              <Text variant="caption" color="#a1a1aa">Online</Text>
             </VStack>
             <VStack align="center" gap={1}>
-              <Text variant="display" color={downCount > 0 ? colors.error : colors.textMuted}>{loading ? '-' : downCount}</Text>
-              <Text variant="caption" color={colors.textMuted}>Offline</Text>
+              <Text variant="display" color={downCount > 0 ? '#f87171' : '#71717a'}>{loading ? '-' : downCount}</Text>
+              <Text variant="caption" color="#a1a1aa">Offline</Text>
             </VStack>
             <VStack align="center" gap={1}>
-              <Text variant="display" color={amber[500]}>{loading ? '-' : total}</Text>
-              <Text variant="caption" color={colors.textMuted}>Total</Text>
+              <Text variant="display" color="#fff">{loading ? '-' : total}</Text>
+              <Text variant="caption" color="#a1a1aa">Total</Text>
             </VStack>
           </HStack>
         </Card>
@@ -48,6 +54,16 @@ export function HomeScreen() {
             <Skeleton height={80} />
             <Skeleton height={80} />
           </VStack>
+        ) : error && !servers ? (
+          <Card variant="outline" padding="lg">
+            <VStack align="center" gap={2}>
+              <Icon svg={icons.alertTriangle} size={32} color={colors.error} />
+              <Text variant="body" color={colors.error} align="center">Failed to load servers</Text>
+              <Text variant="caption" color={colors.textMuted} align="center">
+                Pull down to retry.
+              </Text>
+            </VStack>
+          </Card>
         ) : servers?.length === 0 ? (
           <Card variant="outline" padding="lg">
             <VStack align="center" gap={2}>
@@ -94,12 +110,12 @@ function ServerCard({ server }: { server: Server }) {
         </Text>
 
         <HStack gap={2}>
-          <Badge size="sm" color="accent" variant="subtle">
-            <Text variant="caption">{server.commands.length} {server.commands.length === 1 ? 'command' : 'commands'}</Text>
+          <Badge size="sm" style={{ backgroundColor: '#2a2a2e', borderRadius: 6 }}>
+            <Text variant="caption" color="#e4e4e7">{server.commands.length} {server.commands.length === 1 ? 'command' : 'commands'}</Text>
           </Badge>
           {server.suites.length > 0 && (
-            <Badge size="sm" color="info" variant="subtle">
-              <Text variant="caption">{server.suites.length} {server.suites.length === 1 ? 'suite' : 'suites'}</Text>
+            <Badge size="sm" style={{ backgroundColor: '#2a2a2e', borderRadius: 6 }}>
+              <Text variant="caption" color="#e4e4e7">{server.suites.length} {server.suites.length === 1 ? 'suite' : 'suites'}</Text>
             </Badge>
           )}
         </HStack>

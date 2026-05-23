@@ -1,0 +1,1184 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.SuiteKit-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/sources",
+      "importPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuiteGuard.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuitePane.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SuiteKit",
+      "moduleOutputPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/SuiteKit.swiftmodule",
+      "objects" : [
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/include/SuiteKit-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "suitekit_swift"
+      ],
+      "outputFileMapPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/SuiteKit.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuiteGuard.swift",
+        "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuitePane.swift"
+      ],
+      "tempsPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.Tap-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/sources",
+      "importPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/Tap/TapApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapPane.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapShared.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/libSuiteKit.dylib"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "Tap",
+      "moduleOutputPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/Tap.swiftmodule",
+      "objects" : [
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/TapApp.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-Xfrontend",
+        "-entry-point-function-name",
+        "-Xfrontend",
+        "Tap_main",
+        "-parse-as-library",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/TapApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/Tap.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/matt/Development/Apps/tap/macos/Sources/Tap/TapApp.swift"
+      ],
+      "tempsPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.TapPane-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/sources",
+      "importPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapShared.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/libSuiteKit.dylib"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "TapPane",
+      "moduleOutputPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapPane.swiftmodule",
+      "objects" : [
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/include/TapPane-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapPane.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift"
+      ],
+      "tempsPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.TapShared-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/sources",
+      "importPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "TapShared",
+      "moduleOutputPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapShared.swiftmodule",
+      "objects" : [
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swift.o",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/include/TapShared-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "macos"
+      ],
+      "outputFileMapPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules/TapShared.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift",
+        "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift"
+      ],
+      "tempsPath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "SuiteKit" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SuiteKit",
+      "-package-name",
+      "suitekit_swift",
+      "-c",
+      "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuiteGuard.swift",
+      "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuitePane.swift",
+      "-I",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/include/SuiteKit-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "suitekit_swift",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "Tap" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "Tap",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/matt/Development/Apps/tap/macos/Sources/Tap/TapApp.swift",
+      "-I",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-Xfrontend",
+      "-entry-point-function-name",
+      "-Xfrontend",
+      "Tap_main",
+      "-parse-as-library",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "TapPane" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "TapPane",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift",
+      "-I",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/include/TapPane-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "TapShared" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "TapShared",
+      "-package-name",
+      "macos",
+      "-c",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift",
+      "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift",
+      "-I",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/include/TapShared-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "macos",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "SuiteKit" : [
+
+    ],
+    "Tap" : [
+      "TapPane",
+      "SuiteKit",
+      "TapShared"
+    ],
+    "TapPane" : [
+      "SuiteKit",
+      "TapShared"
+    ],
+    "TapShared" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuiteGuard.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/suitekit-swift/Sources/SuiteKit/SuitePane.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/sources"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuiteGuard.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.build/SuitePane.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/SuiteKit.product/Objects.LinkFileList"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap-entitlement.plist" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<entitlement-plist>"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<com.apple.security.get-task-allow>"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap-entitlement.plist"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/Tap/TapApp.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/sources"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.build/TapApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/Tap.product/Objects.LinkFileList"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/sources"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.product/Objects.LinkFileList"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/sources"
+    },
+    "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

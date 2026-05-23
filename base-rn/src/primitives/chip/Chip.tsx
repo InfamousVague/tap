@@ -1,15 +1,16 @@
 import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { springConfig } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
 import { Text } from '../text';
-import { springConfig } from '../../tokens/animation';
 
 export interface ChipProps {
   label: string;
   selected?: boolean;
   onPress?: () => void;
-  icon?: React.ReactNode;
+  removable?: boolean;
+  onRemove?: () => void;
   disabled?: boolean;
   style?: ViewStyle;
 }
@@ -20,8 +21,9 @@ export function Chip({
   label,
   selected = false,
   onPress,
-  icon,
-  disabled,
+  removable = false,
+  onRemove,
+  disabled = false,
   style,
 }: ChipProps) {
   const { colors, radius, spacing } = useTheme();
@@ -34,8 +36,12 @@ export function Chip({
   return (
     <AnimatedPressable
       onPress={disabled ? undefined : onPress}
-      onPressIn={() => { scale.value = withSpring(0.95, springConfig.snappy); }}
-      onPressOut={() => { scale.value = withSpring(1, springConfig.gentle); }}
+      onPressIn={() => {
+        scale.value = withSpring(0.96, springConfig.snappy);
+      }}
+      onPressOut={() => {
+        scale.value = withSpring(1, springConfig.gentle);
+      }}
       style={[
         animatedStyle,
         {
@@ -53,13 +59,16 @@ export function Chip({
         style,
       ]}
     >
-      {icon}
-      <Text
-        variant="label"
-        color={selected ? colors.accentText : colors.text}
-      >
+      <Text variant="label" color={selected ? colors.accentText : colors.text}>
         {label}
       </Text>
+      {removable && (
+        <Pressable onPress={onRemove} hitSlop={8}>
+          <Text variant="caption" color={selected ? colors.accentText : colors.textMuted}>
+            x
+          </Text>
+        </Pressable>
+      )}
     </AnimatedPressable>
   );
 }

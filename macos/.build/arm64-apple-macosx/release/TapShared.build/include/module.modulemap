@@ -1,0 +1,3 @@
+module TapShared {
+    header "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/include/TapShared-Swift.h"
+}

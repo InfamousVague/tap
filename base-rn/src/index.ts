@@ -2,8 +2,44 @@
 export { ThemeProvider, useTheme, createStyleSheet, lightTheme, darkTheme } from './theme';
 export type { Theme, ColorMode, SemanticColors, ThemeContextValue } from './theme';
 
-// Tokens
-export * from './tokens';
+// Re-export tokens for convenience
+export {
+  gray,
+  amber,
+  red,
+  green,
+  blue,
+  orange,
+  white,
+  black,
+  transparent,
+  lightColors,
+  darkColors,
+  spacing,
+  fontWeight,
+  fontSize,
+  lineHeight,
+  textStyles,
+  radius,
+  shadows,
+  duration,
+  easingValues,
+  springConfig,
+} from '@mattssoftware/base-tokens';
+
+export type {
+  SpacingKey,
+  SpacingValue,
+  TextStyleKey,
+  FontSizeKey,
+  LineHeightKey,
+  RadiusKey,
+  Shadow,
+  ShadowKey,
+  DurationKey,
+  SpringConfigKey,
+  EasingKey,
+} from '@mattssoftware/base-tokens';
 
 // Primitives
 export { Text } from './primitives/text';
@@ -55,7 +91,7 @@ export { Toaster, useToast } from './primitives/toast';
 export type { ToastType } from './primitives/toast';
 
 export { Glass } from './primitives/glass';
-export type { GlassProps } from './primitives/glass';
+export type { GlassProps, GlassIntensity } from './primitives/glass';
 
 export { Dialog } from './primitives/dialog';
 export type { DialogProps } from './primitives/dialog';

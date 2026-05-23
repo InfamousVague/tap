@@ -1,0 +1,47 @@
+{
+  "": {
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/AppGroup.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/IntentBus.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/Intents.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/SharedState.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/StatsStore.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapShared.build/WidgetSignal.dia"
+  }
+}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ScrollView, RefreshControl, Alert } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { ScrollView, RefreshControl, Alert, Pressable, View } from 'react-native';
 import {
   useTheme, VStack, HStack, Text, Card, Button, Input, Dialog, ListItem, Separator,
   Badge, Indicator, Icon, icons, Skeleton, useToast, Toggle,
@@ -7,15 +7,41 @@ import {
 import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
 import { api, Server, Command, ExecResult } from '../services/api';
 import { useQuery, useMutation } from '../hooks/useApi';
+import { useNavigation } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 export function ServersScreen() {
   const { colors, spacing } = useTheme();
-  const { data: servers, loading, refetch } = useQuery(() => api.listServers(), []);
+  const navigation = useNavigation();
+  const { data: servers, loading, error, refetch } = useQuery(() => api.listServers(), []);
   const [selectedServer, setSelectedServer] = useState<Server | null>(null);
+
+  // Update the native header bar when a server is selected/deselected
+  useLayoutEffect(() => {
+    if (selectedServer) {
+      navigation.setOptions({
+        title: selectedServer.name,
+        headerLeft: () => (
+          <Pressable onPress={() => setSelectedServer(null)} style={{ paddingLeft: 16, paddingRight: 8 }}>
+            <Icon svg={icons.chevronLeft} size={22} color={amber[500]} />
+          </Pressable>
+        ),
+      });
+    } else {
+      navigation.setOptions({
+        title: 'Servers',
+        headerLeft: undefined,
+      });
+    }
+  }, [selectedServer, navigation]);
   const [showAddServer, setShowAddServer] = useState(false);
   const [showAddCommand, setShowAddCommand] = useState(false);
   const { toast } = useToast();
+
+  // Show toast on fetch error
+  React.useEffect(() => {
+    if (error) toast({ type: 'error', title: 'Failed to load servers', message: error });
+  }, [error]);
 
   // Add server form
   const [serverName, setServerName] = useState('');
@@ -29,22 +55,32 @@ export function ServersScreen() {
   const [cmdConfirm, setCmdConfirm] = useState(false);
 
   const addServer = useMutation(async () => {
-    await api.createServer({ name: serverName, host: serverHost, port: parseInt(serverPort), user: serverUser });
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    toast({ type: 'success', title: `Server "${serverName}" added` });
-    setShowAddServer(false);
-    setServerName(''); setServerHost(''); setServerPort('22'); setServerUser('root');
-    refetch();
+    try {
+      await api.createServer({ name: serverName, host: serverHost, port: parseInt(serverPort), user: serverUser });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      toast({ type: 'success', title: `Server "${serverName}" added` });
+      setShowAddServer(false);
+      setServerName(''); setServerHost(''); setServerPort('22'); setServerUser('root');
+      refetch();
+    } catch (e: any) {
+      toast({ type: 'error', title: 'Failed to add server', message: e.message });
+      throw e;
+    }
   });
 
   const addCommand = useMutation(async () => {
     if (!selectedServer) return;
-    await api.createCommand(selectedServer.id, { label: cmdLabel, command: cmdCommand, confirm: cmdConfirm });
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    toast({ type: 'success', title: `Command "${cmdLabel}" added` });
-    setShowAddCommand(false);
-    setCmdLabel(''); setCmdCommand(''); setCmdConfirm(false);
-    refetch();
+    try {
+      await api.createCommand(selectedServer.id, { label: cmdLabel, command: cmdCommand, confirm: cmdConfirm });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      toast({ type: 'success', title: `Command "${cmdLabel}" added` });
+      setShowAddCommand(false);
+      setCmdLabel(''); setCmdCommand(''); setCmdConfirm(false);
+      refetch();
+    } catch (e: any) {
+      toast({ type: 'error', title: 'Failed to add command', message: e.message });
+      throw e;
+    }
   });
 
   const deleteServer = (server: Server) => {
@@ -52,10 +88,15 @@ export function ServersScreen() {
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
-          await api.deleteServer(server.id);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          if (selectedServer?.id === server.id) setSelectedServer(null);
-          refetch();
+          try {
+            await api.deleteServer(server.id);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            toast({ type: 'success', title: `Server "${server.name}" deleted` });
+            if (selectedServer?.id === server.id) setSelectedServer(null);
+            refetch();
+          } catch (e: any) {
+            toast({ type: 'error', title: 'Failed to delete server', message: e.message });
+          }
         }
       },
     ]);
@@ -104,23 +145,31 @@ export function ServersScreen() {
             {servers?.length ?? 0} servers
           </Text>
           <HStack gap={2}>
-            <Button variant="ghost" size="sm" onPress={importSshConfig}>
-              <HStack gap={1} align="center">
-                <Icon svg={icons.download} size={14} color={amber[500]} />
-                <Text variant="caption" color={amber[500]}>Import SSH</Text>
-              </HStack>
+            <Button variant="secondary" size="sm" style={{ backgroundColor: colors.bgMuted, borderWidth: 0 }} onPress={importSshConfig}
+              icon={<Icon svg={icons.download} size={14} color={colors.textMuted} />}
+            >
+              Import SSH
             </Button>
-            <Button variant="primary" size="sm" onPress={() => setShowAddServer(true)}>
-              <HStack gap={1} align="center">
-                <Icon svg={icons.plus} size={14} color="white" />
-                <Text variant="caption" color="white">Add</Text>
-              </HStack>
+            <Button variant="primary" size="sm" onPress={() => setShowAddServer(true)}
+              icon={<Icon svg={icons.plus} size={14} color="white" />}
+            >
+              Add
             </Button>
           </HStack>
         </HStack>
 
         {loading && !servers ? (
           <VStack gap={2}><Skeleton height={72} /><Skeleton height={72} /><Skeleton height={72} /></VStack>
+        ) : error && !servers ? (
+          <Card variant="outline" padding="lg">
+            <VStack align="center" gap={2}>
+              <Icon svg={icons.alertTriangle} size={32} color={colors.error} />
+              <Text variant="body" color={colors.error} align="center">Failed to load servers</Text>
+              <Text variant="caption" color={colors.textMuted} align="center">
+                Pull down to retry.
+              </Text>
+            </VStack>
+          </Card>
         ) : servers?.length === 0 ? (
           <Card variant="outline" padding="lg">
             <VStack align="center" gap={3}>
@@ -146,8 +195,8 @@ export function ServersScreen() {
                     </VStack>
                   </HStack>
                   <HStack gap={2} align="center">
-                    <Badge size="sm" color="accent" variant="subtle">
-                      <Text variant="caption">{server.commands.length} cmds</Text>
+                    <Badge size="sm" style={{ backgroundColor: '#2a2a2e', borderRadius: 6 }}>
+                      <Text variant="caption" color="#e4e4e7">{server.commands.length} cmds</Text>
                     </Badge>
                     <Icon svg={icons.chevronRight} size={16} color={colors.textMuted} />
                   </HStack>
@@ -164,8 +213,12 @@ export function ServersScreen() {
           <Input label="Name" placeholder="prod-api" value={serverName} onChangeText={setServerName} />
           <Input label="Host" placeholder="10.0.1.10" value={serverHost} onChangeText={setServerHost} />
           <HStack gap={3}>
-            <Input label="Port" placeholder="22" value={serverPort} onChangeText={setServerPort} keyboardType="number-pad" />
-            <Input label="User" placeholder="root" value={serverUser} onChangeText={setServerUser} />
+            <View style={{ flex: 1 }}>
+              <Input label="Port" placeholder="22" value={serverPort} onChangeText={setServerPort} keyboardType="number-pad" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Input label="User" placeholder="root" value={serverUser} onChangeText={setServerUser} />
+            </View>
           </HStack>
           <Button variant="primary" onPress={() => addServer.execute()} loading={addServer.loading} disabled={!serverName || !serverHost}>
             <Text variant="label" color="white">Add Server</Text>
@@ -205,9 +258,14 @@ function ServerDetailScreen({
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
-          await api.deleteCommand(cmd.id);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          onRefetch();
+          try {
+            await api.deleteCommand(cmd.id);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            toast({ type: 'success', title: `Command "${cmd.label}" deleted` });
+            onRefetch();
+          } catch (e: any) {
+            toast({ type: 'error', title: 'Failed to delete command', message: e.message });
+          }
         }
       },
     ]);
@@ -245,34 +303,27 @@ function ServerDetailScreen({
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{ padding: spacing[4] }}
+      contentContainerStyle={{ paddingHorizontal: spacing[4], paddingBottom: spacing[4] }}
     >
-      <VStack gap={4}>
-        <Button variant="ghost" size="sm" onPress={onBack}>
-          <HStack gap={1} align="center">
-            <Icon svg={icons.chevronLeft} size={16} color={amber[500]} />
-            <Text variant="caption" color={amber[500]}>Back</Text>
-          </HStack>
-        </Button>
-
-        {/* Server info header */}
-        <Card variant="filled" padding="md">
+      <VStack gap={4} style={{ paddingTop: spacing[2] }}>
+        {/* Black server info card */}
+        <Card style={{ backgroundColor: '#000', borderRadius: 16, overflow: 'hidden' }} padding="md">
           <VStack gap={2}>
-            <HStack gap={2} align="center">
+            <HStack align="center" gap={2}>
               <Indicator status={statusType} size="md" pulse={server.status === 'up'} />
-              <Text variant="heading">{server.name}</Text>
+              <Text variant="heading" color="#fff" style={{ flex: 1 }}>{server.name}</Text>
             </HStack>
-            <Text variant="caption" color={colors.textMuted} mono>
+            <Text variant="caption" color="#a1a1aa" mono>
               {server.user}@{server.host}:{server.port}
             </Text>
             <HStack gap={2}>
               {server.latency_ms != null && (
-                <Badge size="sm" color="success" variant="subtle">
-                  <Text variant="caption" mono>{server.latency_ms}ms</Text>
+                <Badge size="sm" style={{ backgroundColor: '#1a1a1e', borderRadius: 6 }}>
+                  <Text variant="caption" color="#4ade80" mono>{server.latency_ms}ms</Text>
                 </Badge>
               )}
-              <Badge size="sm" color="accent" variant="subtle">
-                <Text variant="caption">{server.commands.length} commands</Text>
+              <Badge size="sm" style={{ backgroundColor: '#1a1a1e', borderRadius: 6 }}>
+                <Text variant="caption" color="#a1a1aa">{server.commands.length} commands</Text>
               </Badge>
             </HStack>
           </VStack>
@@ -330,11 +381,10 @@ function ServerDetailScreen({
         {/* Commands section */}
         <HStack justify="space-between" align="center">
           <Text variant="label" color={colors.textMuted}>Commands</Text>
-          <Button variant="ghost" size="sm" onPress={onAddCommand}>
-            <HStack gap={1} align="center">
-              <Icon svg={icons.plus} size={14} color={amber[500]} />
-              <Text variant="caption" color={amber[500]}>Add</Text>
-            </HStack>
+          <Button variant="secondary" size="sm" style={{ backgroundColor: colors.bgMuted, borderWidth: 0 }} onPress={onAddCommand}
+            icon={<Icon svg={icons.plus} size={12} color={colors.textMuted} />}
+          >
+            Add
           </Button>
         </HStack>
 
@@ -371,21 +421,25 @@ function ServerDetailScreen({
                         {cmd.command}
                       </Text>
                     </VStack>
-                    <HStack gap={1}>
+                    <HStack gap={2}>
                       <Button
                         variant="primary"
                         size="sm"
                         onPress={() => executeCommand(cmd)}
                         loading={executing === cmd.id}
+                        icon={<Icon svg={icons.play} size={12} color="#fff" />}
                       >
-                        <HStack gap={1} align="center">
-                          <Icon svg={icons.play} size={14} color="white" />
-                          <Text variant="caption" color="white">Run</Text>
-                        </HStack>
+                        Run
                       </Button>
-                      <Button variant="ghost" size="sm" onPress={() => deleteCommand(cmd)}>
-                        <Icon svg={icons.trash} size={14} color={colors.error} />
-                      </Button>
+                      <Button
+                        variant="secondary"
+                        intent="error"
+                        size="sm"
+                        style={{ borderWidth: 0 }}
+                        onPress={() => deleteCommand(cmd)}
+                        icon={<Icon svg={icons.trash} size={12} color={colors.error} />}
+                        iconOnly
+                      />
                     </HStack>
                   </HStack>
                 </Card>

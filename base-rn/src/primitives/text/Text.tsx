@@ -1,7 +1,8 @@
 import React from 'react';
 import { Text as RNText, TextProps as RNTextProps, TextStyle } from 'react-native';
+import { textStyles } from '@mattssoftware/base-tokens';
+import type { TextStyleKey } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
-import { TextStyle as TextStyleKey, textStyles } from '../../tokens/typography';
 
 export interface TextProps extends RNTextProps {
   variant?: TextStyleKey;
@@ -24,7 +25,7 @@ export function Text({
   const { colors, typography } = useTheme();
 
   const baseStyle = textStyles[variant];
-  const resolvedColor = color || colors.text;
+  const resolvedColor = color ?? colors.text;
 
   return (
     <RNText
@@ -33,8 +34,8 @@ export function Text({
           ...baseStyle,
           color: resolvedColor,
           textAlign: align,
-          ...(weight && { fontWeight: weight }),
-          ...(mono && { fontFamily: typography.fontFamily.mono }),
+          ...(weight ? { fontWeight: weight } : undefined),
+          ...(mono ? { fontFamily: typography.fontFamily.mono } : undefined),
         },
         style,
       ]}

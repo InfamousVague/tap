@@ -107,8 +107,14 @@ pub async fn delete_suite(
     Extension(user): Extension<UserId>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, StatusCode> {
-    // Would need to check suite ownership through server — for now just delete
-    // TODO: verify suite's server belongs to user
+    // Look up the suite to get its server_id, then verify ownership
+    let conn = state.db.get_suite(&id)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let suite = conn.ok_or(StatusCode::NOT_FOUND)?;
+    if !state.db.verify_server_owner(&suite.server_id, &user.0)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)? {
+        return Err(StatusCode::NOT_FOUND);
+    }
     state.db.delete_suite(&id)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     Ok(StatusCode::NO_CONTENT)

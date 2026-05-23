@@ -19,11 +19,23 @@ use axum::{
 };
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
+use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer, key_extractor::SmartIpKeyExtractor};
 
 use crate::AppState;
 use crate::auth::auth_middleware;
 
 pub fn build_router(state: Arc<AppState>) -> Router {
+    // Rate limiting: 2 requests/sec replenish, burst of 60
+    let governor_conf = Arc::new(
+        GovernorConfigBuilder::default()
+            .per_second(2)
+            .burst_size(60)
+            .key_extractor(SmartIpKeyExtractor)
+            .finish()
+            .expect("Failed to build rate limiter"),
+    );
+    let rate_limit_layer = GovernorLayer { config: governor_conf };
+
     // Public routes (no auth required)
     let public = Router::new()
         .route("/auth/apple", post(auth_routes::apple_sign_in))
@@ -38,6 +50,9 @@ pub fn build_router(state: Arc<AppState>) -> Router {
         // Auth management
         .route("/auth/token", post(auth_routes::create_token))
         .route("/auth/token/:id", delete(auth_routes::revoke_token))
+        .route("/auth/user", delete(auth_routes::delete_user))
+        // APNs device registration
+        .route("/apns/register", post(auth_routes::register_apns_device))
         // Servers
         .route("/servers", get(servers::list).post(servers::create))
         .route("/servers/:id", put(servers::update).delete(servers::delete_server))
@@ -78,6 +93,7 @@ pub fn build_router(state: Arc<AppState>) -> Router {
     Router::new()
         .merge(public)
         .merge(protected)
+        .layer(rate_limit_layer)
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
         .with_state(state)

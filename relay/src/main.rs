@@ -1,3 +1,4 @@
+mod apns;
 mod auth;
 mod config;
 mod db;
@@ -9,6 +10,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tracing_subscriber::EnvFilter;
 
+use crate::apns::ApnsClient;
 use crate::config::RelayConfig;
 use crate::db::Database;
 use crate::ssh::SshPool;
@@ -18,6 +20,7 @@ pub struct AppState {
     pub ssh_pool: Arc<Mutex<SshPool>>,
     pub config: RelayConfig,
     pub master_key: Option<[u8; 32]>,
+    pub apns: Option<Arc<ApnsClient>>,
 }
 
 #[tokio::main]
@@ -45,12 +48,21 @@ async fn main() -> anyhow::Result<()> {
     // Ensure relay has its own SSH keypair for connecting to servers
     ssh::ensure_relay_keypair(&db, &master_key, &config).await?;
 
+    // Initialize APNs client (optional — works without it)
+    let apns = ApnsClient::from_config(&config.notifications);
+    if apns.is_some() {
+        tracing::info!("Push notifications enabled");
+    } else {
+        tracing::info!("Push notifications disabled (no APNs key configured)");
+    }
+
     // Create app state
     let state = Arc::new(AppState {
         db,
         ssh_pool: Arc::new(Mutex::new(SshPool::new(&config.ssh))),
         config: config.clone(),
         master_key: Some(master_key),
+        apns,
     });
 
     // Start background tasks

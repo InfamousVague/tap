@@ -1,43 +1,42 @@
 import React, { useState } from 'react';
-import { TextInput, TextInputProps, View, Pressable } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { TextInput, TextInputProps, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { duration } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
-import { duration } from '../../tokens/animation';
+import { Text } from '../text';
 
 export interface InputProps extends Omit<TextInputProps, 'style'> {
   size?: 'sm' | 'md' | 'lg';
   variant?: 'outline' | 'filled' | 'ghost';
-  shape?: 'square' | 'default' | 'pill';
   intent?: 'error' | 'warning' | 'success' | 'info';
-  loading?: boolean;
-  skeleton?: boolean;
+  label?: string;
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
-  onClear?: () => void;
-  label?: string;
 }
 
 export function Input({
   size = 'md',
   variant = 'outline',
-  shape = 'default',
   intent,
-  loading,
-  skeleton,
+  label,
   iconLeft,
   iconRight,
-  onClear,
-  label,
   onFocus,
   onBlur,
   ...props
 }: InputProps) {
   const { colors, radius, spacing, typography } = useTheme();
   const [focused, setFocused] = useState(false);
-  const borderColor = useSharedValue(colors.border);
+  const borderProgress = useSharedValue(0);
 
   const animatedBorder = useAnimatedStyle(() => ({
-    borderColor: borderColor.value,
+    borderColor: focused
+      ? intent
+        ? colors[intent]
+        : colors.borderFocus
+      : intent
+        ? colors[intent]
+        : colors.border,
   }));
 
   const sizes = {
@@ -47,67 +46,70 @@ export function Input({
   };
 
   const s = sizes[size];
-  const borderRadius = shape === 'pill' ? radius.full : shape === 'square' ? radius.sm : radius.md;
 
   const getBg = () => {
     switch (variant) {
-      case 'filled': return colors.bgMuted;
-      case 'ghost': return 'transparent';
-      default: return colors.bg;
+      case 'filled':
+        return colors.bgMuted;
+      case 'ghost':
+        return 'transparent';
+      default:
+        return colors.bg;
     }
   };
 
-  const getBorderWidth = () => {
-    switch (variant) {
-      case 'ghost': return 0;
-      default: return 1;
-    }
-  };
-
-  const getBorderColor = () => {
-    if (intent) return colors[intent];
-    if (focused) return colors.borderFocus;
-    return colors.border;
-  };
+  const getBorderWidth = () => (variant === 'ghost' ? 0 : 1);
 
   return (
-    <Animated.View
-      style={[
-        animatedBorder,
-        {
-          height: s.height,
-          backgroundColor: getBg(),
-          borderWidth: getBorderWidth(),
-          borderColor: getBorderColor(),
-          borderRadius,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: s.paddingH,
-          gap: spacing[2],
-        },
-      ]}
-    >
-      {iconLeft}
-      <TextInput
-        style={{
-          flex: 1,
-          height: '100%',
-          fontSize: s.fontSize,
-          color: colors.text,
-          fontFamily: typography.fontFamily.regular,
-        }}
-        placeholderTextColor={colors.textMuted}
-        onFocus={(e) => {
-          setFocused(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setFocused(false);
-          onBlur?.(e);
-        }}
-        {...props}
-      />
-      {iconRight}
-    </Animated.View>
+    <View>
+      {label != null && (
+        <Text
+          variant="label"
+          color={colors.textSubtle}
+          style={{ marginBottom: spacing[1] }}
+        >
+          {label}
+        </Text>
+      )}
+      <Animated.View
+        style={[
+          animatedBorder,
+          {
+            height: s.height,
+            backgroundColor: getBg(),
+            borderWidth: getBorderWidth(),
+            borderRadius: radius.md,
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: s.paddingH,
+            gap: spacing[2],
+          },
+        ]}
+      >
+        {iconLeft}
+        <TextInput
+          style={{
+            flex: 1,
+            height: '100%',
+            fontSize: s.fontSize,
+            color: colors.text,
+            fontFamily: typography.fontFamily.regular,
+          }}
+          placeholderTextColor={colors.textMuted}
+          onFocus={(e) => {
+            setFocused(true);
+            borderProgress.value = withTiming(1, { duration: duration.fast });
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocused(false);
+            borderProgress.value = withTiming(0, { duration: duration.fast });
+            onBlur?.(e);
+          }}
+          {...props}
+        />
+        {iconRight}
+      </Animated.View>
+    </View>
   );
 }

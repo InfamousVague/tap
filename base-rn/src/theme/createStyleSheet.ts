@@ -1,12 +1,12 @@
 import { StyleSheet, ViewStyle, TextStyle, ImageStyle } from 'react-native';
-import { ThemeContextValue } from './ThemeProvider';
+import type { ThemeContextValue } from './ThemeProvider';
 
 type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
 type StyleFactory<T> = (theme: ThemeContextValue) => T;
 
 /**
  * Creates a themed StyleSheet factory.
- * Usage:
+ *
  *   const useStyles = createStyleSheet((theme) => ({
  *     container: { backgroundColor: theme.colors.bg },
  *   }));
@@ -16,9 +16,8 @@ type StyleFactory<T> = (theme: ThemeContextValue) => T;
  *   const styles = useStyles(theme);
  */
 export function createStyleSheet<T extends NamedStyles<T>>(
-  factory: StyleFactory<T>
+  factory: StyleFactory<T>,
 ): (theme: ThemeContextValue) => T {
-  // Cache per color mode to avoid recreating on every render
   const cache = new Map<string, T>();
 
   return (theme: ThemeContextValue) => {

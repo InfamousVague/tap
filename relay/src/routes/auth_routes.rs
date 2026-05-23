@@ -218,3 +218,44 @@ pub async fn revoke_token(
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     Ok(StatusCode::NO_CONTENT)
 }
+
+#[derive(Deserialize)]
+pub struct RegisterApnsDeviceRequest {
+    pub device_token: String,
+    pub device_type: String,
+}
+
+/// POST /apns/register — register a device for push notifications
+pub async fn register_apns_device(
+    State(state): State<Arc<AppState>>,
+    axum::extract::Extension(user): axum::extract::Extension<crate::auth::middleware::UserId>,
+    Json(body): Json<RegisterApnsDeviceRequest>,
+) -> Result<(StatusCode, Json<serde_json::Value>), StatusCode> {
+    let id = uuid::Uuid::new_v4().to_string();
+    state.db.register_apns_device(&id, &user.0, &body.device_token, &body.device_type)
+        .map_err(|e| {
+            tracing::error!("Failed to register APNs device: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+    tracing::info!("APNs device registered for user {} (type={})", &user.0[..8.min(user.0.len())], &body.device_type);
+
+    Ok((StatusCode::CREATED, Json(serde_json::json!({
+        "id": id,
+        "device_type": body.device_type,
+    }))))
+}
+
+/// DELETE /auth/user — delete the authenticated user's account and all associated data
+pub async fn delete_user(
+    State(state): State<Arc<AppState>>,
+    axum::extract::Extension(user): axum::extract::Extension<crate::auth::middleware::UserId>,
+) -> Result<StatusCode, StatusCode> {
+    state.db.delete_user(&user.0)
+        .map_err(|e| {
+            tracing::error!("Failed to delete user {}: {}", &user.0, e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    tracing::info!("User {} deleted their account", &user.0);
+    Ok(StatusCode::NO_CONTENT)
+}

@@ -1,7 +1,32 @@
 import React from 'react';
 import { View, ViewStyle } from 'react-native';
 import { useTheme } from '../../theme';
-import { GlassIntensity } from '../../tokens/glass';
+
+export type GlassIntensity = 'subtle' | 'default' | 'elevated';
+
+const glassConfig = {
+  subtle: {
+    blurAmount: 8,
+    bgLight: 'rgba(255, 255, 255, 0.6)',
+    bgDark: 'rgba(24, 24, 27, 0.6)',
+    borderLight: 'rgba(255, 255, 255, 0.3)',
+    borderDark: 'rgba(255, 255, 255, 0.08)',
+  },
+  default: {
+    blurAmount: 16,
+    bgLight: 'rgba(255, 255, 255, 0.72)',
+    bgDark: 'rgba(24, 24, 27, 0.72)',
+    borderLight: 'rgba(255, 255, 255, 0.4)',
+    borderDark: 'rgba(255, 255, 255, 0.12)',
+  },
+  elevated: {
+    blurAmount: 24,
+    bgLight: 'rgba(255, 255, 255, 0.85)',
+    bgDark: 'rgba(24, 24, 27, 0.85)',
+    borderLight: 'rgba(255, 255, 255, 0.5)',
+    borderDark: 'rgba(255, 255, 255, 0.16)',
+  },
+} as const;
 
 export interface GlassProps {
   intensity?: GlassIntensity;
@@ -14,17 +39,11 @@ export interface GlassProps {
  * Uses @react-native-community/blur when available,
  * falls back to translucent background.
  */
-export function Glass({
-  intensity = 'default',
-  children,
-  style,
-}: GlassProps) {
-  const { glass: glassTokens, colorMode, radius } = useTheme();
-  const config = glassTokens[intensity];
+export function Glass({ intensity = 'default', children, style }: GlassProps) {
+  const { colorMode, radius } = useTheme();
+  const config = glassConfig[intensity];
   const isDark = colorMode === 'dark';
 
-  // Fallback implementation (works without blur library)
-  // When @react-native-community/blur is installed, replace with BlurView
   return (
     <View
       style={[

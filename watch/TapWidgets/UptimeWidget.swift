@@ -4,7 +4,7 @@ import AppIntents
 
 // MARK: - Uptime Widget
 
-struct UptimeIntent: WidgetConfigurationIntent {
+struct UptimeIntent: WidgetConfigurationIntent, Sendable {
     static var title: LocalizedStringResource = "Server Uptime"
     static var description = IntentDescription("View uptime for a specific server or all servers.")
 
@@ -13,7 +13,7 @@ struct UptimeIntent: WidgetConfigurationIntent {
 }
 
 struct UptimeProvider: AppIntentTimelineProvider {
-    private let defaults = UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp")
+    private var defaults: UserDefaults? { UserDefaults(suiteName: "group.com.mattssoftware.tap.watchkitapp") }
 
     func placeholder(in context: Context) -> UptimeEntry {
         UptimeEntry(date: .now, serverName: nil, servers: [

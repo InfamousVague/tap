@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
+import type { SpacingKey } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
-import { SpacingKey } from '../../tokens/spacing';
 
 export interface StackProps extends ViewProps {
   direction?: 'row' | 'column';
@@ -36,14 +36,14 @@ export function Stack({
       style={[
         {
           flexDirection: direction,
-          ...(gap !== undefined && { gap: spacing[gap] }),
-          ...(align && { alignItems: align }),
-          ...(justify && { justifyContent: justify }),
-          ...(wrap && { flexWrap: 'wrap' }),
-          ...(flex !== undefined && { flex }),
-          ...(padding !== undefined && { padding: spacing[padding] }),
-          ...(paddingX !== undefined && { paddingHorizontal: spacing[paddingX] }),
-          ...(paddingY !== undefined && { paddingVertical: spacing[paddingY] }),
+          ...(gap !== undefined ? { gap: spacing[gap] } : undefined),
+          ...(align ? { alignItems: align } : undefined),
+          ...(justify ? { justifyContent: justify } : undefined),
+          ...(wrap ? { flexWrap: 'wrap' } : undefined),
+          ...(flex !== undefined ? { flex } : undefined),
+          ...(padding !== undefined ? { padding: spacing[padding] } : undefined),
+          ...(paddingX !== undefined ? { paddingHorizontal: spacing[paddingX] } : undefined),
+          ...(paddingY !== undefined ? { paddingVertical: spacing[paddingY] } : undefined),
         },
         style,
       ]}
@@ -54,7 +54,6 @@ export function Stack({
   );
 }
 
-// Convenience aliases
 export function HStack(props: Omit<StackProps, 'direction'>) {
   return <Stack direction="row" {...props} />;
 }

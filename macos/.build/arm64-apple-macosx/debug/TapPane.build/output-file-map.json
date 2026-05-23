@@ -1,0 +1,82 @@
+{
+  "": {
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/APIClient.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/APIClient.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/CommandPresets.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/CommandPresets.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ContentView.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ContentView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/KeychainService.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/KeychainService.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Models.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Models.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Plugin.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Plugin.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/ServerListView.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/ServerListView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Sheets.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Sheets.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/SignInView.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/SignInView.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/TapStore.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/TapStore.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapPane/Theme.swift": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/debug/TapPane.build/Theme.dia"
+  }
+}

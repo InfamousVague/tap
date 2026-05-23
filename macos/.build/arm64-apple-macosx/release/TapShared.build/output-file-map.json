@@ -1,0 +1,43 @@
+{
+  "": {
+    "dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/TapShared.d",
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/TapShared.o",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/primary.swiftdeps"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/AppGroup.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/AppGroup.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/AppGroup~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/AppGroup.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/AppGroup.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/IntentBus.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/IntentBus.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/IntentBus~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/IntentBus.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/IntentBus.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/Intents.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/Intents.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/Intents~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/Intents.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/Intents.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/SharedState.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/SharedState.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/SharedState~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/SharedState.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/SharedState.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/StatsStore.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/StatsStore.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/StatsStore~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/StatsStore.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/StatsStore.dia"
+  },
+  "/Users/matt/Development/Apps/tap/macos/Sources/TapShared/WidgetSignal.swift": {
+    "object": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/WidgetSignal.swift.o",
+    "swiftmodule": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/WidgetSignal~partial.swiftmodule",
+    "swift-dependencies": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/WidgetSignal.swiftdeps",
+    "diagnostics": "/Users/matt/Development/Apps/tap/macos/.build/arm64-apple-macosx/release/TapShared.build/WidgetSignal.dia"
+  }
+}

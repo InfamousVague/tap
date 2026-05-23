@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { useTheme, VStack, Text, Icon, icons } from '@mattssoftware/base-rn';
+import { View, Image, useColorScheme } from 'react-native';
+import { useTheme, VStack, Text } from '@mattssoftware/base-rn';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useAuth } from '../hooks/useAuth';
-import { amber } from '@mattssoftware/base-rn/src/tokens/colors';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const tapLogo = require('../../assets/icon.png');
 
 export function SignInScreen() {
   const { colors, spacing } = useTheme();
+  const colorScheme = useColorScheme();
   const { signInWithApple } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +41,7 @@ export function SignInScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center', padding: spacing[8] }}>
       <VStack gap={6} align="center">
-        <Icon svg={icons.terminal} size={64} color={amber[500]} />
+        <Image source={tapLogo} style={{ width: 96, height: 96, borderRadius: 22 }} />
         <Text variant="display" align="center">Tap</Text>
         <Text variant="body" color={colors.textMuted} align="center">
           The command remote for your infrastructure.
@@ -48,7 +51,11 @@ export function SignInScreen() {
 
         <AppleAuthentication.AppleAuthenticationButton
           buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.WHITE}
+          buttonStyle={
+            colorScheme === 'dark'
+              ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+              : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+          }
           cornerRadius={12}
           style={{ width: '100%', height: 50 }}
           onPress={handleAppleSignIn}

@@ -1,0 +1,74 @@
+# xcodegen spec for the Tap widget extension. Same shape as the
+# Alfred / Stats / Port / Quarantine widget subprojects: tiny Xcode
+# bundle that owns the `.appex`, everything else (the standalone
+# Tap shim, the TapPane dylib, the TapShared library the widget
+# reads from) stays in `Package.swift` at the repo root.
+#
+# Reason for not living in SwiftPM: SR-14944 — SPM has no
+# `productType = com.apple.product-type.app-extension`, and without
+# it ExtensionFoundation fatal-errors with "Unrecognized extension
+# type" at launch. The Xcode project type sets `LD_ENTRY_POINT =
+# _NSExtensionMain` for us, which is the missing piece.
+#
+# Build via the `xcodebuild` invocation in scripts/make-app.sh.
+
+name: TapWidgets
+options:
+  bundleIdPrefix: com.mattssoftware.tap
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: en
+
+# Consume the SPM package at ../ — TapShared lives there. The widget
+# needs `SharedTapState` (the Group-Container model the host writes)
+# and the AppIntents (`RefreshIntent` / `ExecuteCommandIntent`) the
+# widget's buttons trigger.
+packages:
+  Tap:
+    path: ..
+
+targets:
+  TapWidgets:
+    type: app-extension
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources
+      # Asset catalog with `WidgetBackground` + `AccentColor`. Tahoe
+      # widget chrome reads these via NSWidgetBackgroundColorName /
+      # NSAccentColorName for the gallery preview, and the runtime
+      # view tree references `Color("WidgetBackground")` so the
+      # WindowServer can swap the fill in Clear / Tinted appearance
+      # modes — without the catalog the widget falls back to legacy
+      # opaque chrome.
+      - path: Supporting Files/Assets.xcassets
+    info:
+      path: Supporting Files/Info.plist
+      properties:
+        CFBundleDisplayName: Tap
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSWidgetBackgroundColorName: WidgetBackground
+        NSAccentColorName: AccentColor
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    # NB: NOT using `entitlements:` here. xcodegen's `entitlements.path`
+    # *overwrites* the file with an empty <dict/> on every regen
+    # unless `properties` is also set — a blank entitlements file
+    # makes pkd reject the appex with "plug-ins must be sandboxed".
+    # Point at the file via the standard Xcode build setting
+    # instead.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mattssoftware.tap.widget
+        PRODUCT_NAME: TapWidgets
+        CODE_SIGN_ENTITLEMENTS: Supporting Files/TapWidgets.entitlements
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: F6ZAL7ANAD
+        MARKETING_VERSION: "1.1.0"
+        CURRENT_PROJECT_VERSION: "1.1.0"
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+    dependencies:
+      - package: Tap
+        product: TapShared

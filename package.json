@@ -1,6 +1,6 @@
 {
   "name": "tap",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "phone": "PATH=/opt/homebrew/opt/node@22/bin:$PATH cd companion && npx expo run:ios --device",

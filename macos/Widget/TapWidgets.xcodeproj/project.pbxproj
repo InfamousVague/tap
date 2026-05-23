@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1059A43F326489CF3120F9CE /* TapShared in Frameworks */ = {isa = PBXBuildFile; productRef = 030A2D491BB5D91E46D0A8A0 /* TapShared */; };
+		444D273260AF93C20F94C61C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9806E4E8926C836F11A7C0 /* Assets.xcassets */; };
+		77DD48F49970576A1C234677 /* TapProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE559657B4B399BE0BE07C66 /* TapProvider.swift */; };
+		BA971110A4AF1BEAE4F98EF9 /* TapCommandsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E4AC3054AE0FCB85DBAF5 /* TapCommandsWidget.swift */; };
+		BD3F606394BB092A046CF2AD /* TapStatusWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E65F8F260368D1180160BC3 /* TapStatusWidget.swift */; };
+		D6409B88995CA10C5DCC2095 /* CommandsSmallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159DCB6272FADFEC23F077A1 /* CommandsSmallView.swift */; };
+		D90E09591B60315E408BD713 /* CommandsMediumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49092F71E5C739706345CF2B /* CommandsMediumView.swift */; };
+		F0C291A7AAB66E69547745B5 /* TapWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE43C6B9C37BF2240D909A /* TapWidgetBundle.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A9806E4E8926C836F11A7C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		159DCB6272FADFEC23F077A1 /* CommandsSmallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsSmallView.swift; sourceTree = "<group>"; };
+		1CEF54E53A4E25CB2FF47E97 /* TapWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TapWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C8E4AC3054AE0FCB85DBAF5 /* TapCommandsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapCommandsWidget.swift; sourceTree = "<group>"; };
+		49092F71E5C739706345CF2B /* CommandsMediumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsMediumView.swift; sourceTree = "<group>"; };
+		7CBE43C6B9C37BF2240D909A /* TapWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapWidgetBundle.swift; sourceTree = "<group>"; };
+		9E65F8F260368D1180160BC3 /* TapStatusWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapStatusWidget.swift; sourceTree = "<group>"; };
+		D436CEE809956300A98E8045 /* macos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = macos; path = ..; sourceTree = SOURCE_ROOT; };
+		DE559657B4B399BE0BE07C66 /* TapProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapProvider.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2FFBA99396B2B1F4B3FE5EC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1059A43F326489CF3120F9CE /* TapShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		33213D276B0D8C6199D58D13 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				49092F71E5C739706345CF2B /* CommandsMediumView.swift */,
+				159DCB6272FADFEC23F077A1 /* CommandsSmallView.swift */,
+				3C8E4AC3054AE0FCB85DBAF5 /* TapCommandsWidget.swift */,
+				DE559657B4B399BE0BE07C66 /* TapProvider.swift */,
+				9E65F8F260368D1180160BC3 /* TapStatusWidget.swift */,
+				7CBE43C6B9C37BF2240D909A /* TapWidgetBundle.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		41499806BEAB45D14057B017 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1CEF54E53A4E25CB2FF47E97 /* TapWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5424550382C9CF8778D1CCB1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0A9806E4E8926C836F11A7C0 /* Assets.xcassets */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		79EEC53D0AA54DF8CEC2550D /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				D436CEE809956300A98E8045 /* macos */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		D07A4ADF81833EB8BAF90BFD = {
+			isa = PBXGroup;
+			children = (
+				79EEC53D0AA54DF8CEC2550D /* Packages */,
+				33213D276B0D8C6199D58D13 /* Sources */,
+				5424550382C9CF8778D1CCB1 /* Supporting Files */,
+				41499806BEAB45D14057B017 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		186AF5C2A797CB5EC095C176 /* TapWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69775E03FB568C35E860D7B4 /* Build configuration list for PBXNativeTarget "TapWidgets" */;
+			buildPhases = (
+				4D2D40F3799CED33BDECFB44 /* Sources */,
+				25839B58E2A3BA145834EF59 /* Resources */,
+				2FFBA99396B2B1F4B3FE5EC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TapWidgets;
+			packageProductDependencies = (
+				030A2D491BB5D91E46D0A8A0 /* TapShared */,
+			);
+			productName = TapWidgets;
+			productReference = 1CEF54E53A4E25CB2FF47E97 /* TapWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		126EC0DE223EF474431662B4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					186AF5C2A797CB5EC095C176 = {
+						DevelopmentTeam = F6ZAL7ANAD;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = F189C1EBBCF5A006F11D8140 /* Build configuration list for PBXProject "TapWidgets" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D07A4ADF81833EB8BAF90BFD;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				202B43AEDA62AF84D809744F /* XCLocalSwiftPackageReference ".." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 41499806BEAB45D14057B017 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				186AF5C2A797CB5EC095C176 /* TapWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		25839B58E2A3BA145834EF59 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				444D273260AF93C20F94C61C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4D2D40F3799CED33BDECFB44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D90E09591B60315E408BD713 /* CommandsMediumView.swift in Sources */,
+				D6409B88995CA10C5DCC2095 /* CommandsSmallView.swift in Sources */,
+				BA971110A4AF1BEAE4F98EF9 /* TapCommandsWidget.swift in Sources */,
+				77DD48F49970576A1C234677 /* TapProvider.swift in Sources */,
+				BD3F606394BB092A046CF2AD /* TapStatusWidget.swift in Sources */,
+				F0C291A7AAB66E69547745B5 /* TapWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4F688D6A4CEB2F656200CE45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5A751CC743116DDEDA4CF09B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A036A5B35D5206E9A2109DEF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Supporting Files/TapWidgets.entitlements";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.1.0;
+				DEVELOPMENT_TEAM = F6ZAL7ANAD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattssoftware.tap.widget;
+				PRODUCT_NAME = TapWidgets;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		B686406F31ED2CCAD63BE87C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Supporting Files/TapWidgets.entitlements";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.1.0;
+				DEVELOPMENT_TEAM = F6ZAL7ANAD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattssoftware.tap.widget;
+				PRODUCT_NAME = TapWidgets;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		69775E03FB568C35E860D7B4 /* Build configuration list for PBXNativeTarget "TapWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B686406F31ED2CCAD63BE87C /* Debug */,
+				A036A5B35D5206E9A2109DEF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F189C1EBBCF5A006F11D8140 /* Build configuration list for PBXProject "TapWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F688D6A4CEB2F656200CE45 /* Debug */,
+				5A751CC743116DDEDA4CF09B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		202B43AEDA62AF84D809744F /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		030A2D491BB5D91E46D0A8A0 /* TapShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TapShared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 126EC0DE223EF474431662B4 /* Project object */;
+}

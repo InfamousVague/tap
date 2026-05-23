@@ -1,0 +1,27 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "suitekit-swift",
+          "kind" : "fileSystem",
+          "location" : "/Users/matt/Development/Apps/suitekit-swift",
+          "name" : "SuiteKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/matt/Development/Apps/suitekit-swift"
+        },
+        "subpath" : "suitekit-swift"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}

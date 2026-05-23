@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { View, ViewStyle } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { duration } from '@mattssoftware/base-tokens';
 import { useTheme } from '../../theme';
-import { duration } from '../../tokens/animation';
 
 export interface ProgressProps {
-  value: number; // 0-100
-  size?: 'sm' | 'md' | 'lg';
+  /** 0 to 1 */
+  value: number;
+  size?: 'sm' | 'md';
   color?: string;
-  animated?: boolean;
   style?: ViewStyle;
 }
 
@@ -16,33 +16,28 @@ export function Progress({
   value,
   size = 'md',
   color,
-  animated = true,
   style,
 }: ProgressProps) {
   const { colors, radius } = useTheme();
   const width = useSharedValue(0);
 
   useEffect(() => {
-    const clamped = Math.min(100, Math.max(0, value));
-    if (animated) {
-      width.value = withTiming(clamped, { duration: duration.normal });
-    } else {
-      width.value = clamped;
-    }
+    const clamped = Math.min(1, Math.max(0, value)) * 100;
+    width.value = withTiming(clamped, { duration: duration.normal });
   }, [value]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    width: `${width.value}%`,
+    width: `${width.value}%` as any,
   }));
 
-  const sizeMap = { sm: 4, md: 8, lg: 12 };
-  const height = sizeMap[size];
+  const sizeMap = { sm: 4, md: 8 };
+  const h = sizeMap[size];
 
   return (
     <View
       style={[
         {
-          height,
+          height: h,
           backgroundColor: colors.bgMuted,
           borderRadius: radius.full,
           overflow: 'hidden',
@@ -55,7 +50,7 @@ export function Progress({
           animatedStyle,
           {
             height: '100%',
-            backgroundColor: color || colors.accent,
+            backgroundColor: color ?? colors.accent,
             borderRadius: radius.full,
           },
         ]}

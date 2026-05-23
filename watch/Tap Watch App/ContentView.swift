@@ -35,10 +35,8 @@ struct MainTabView: View {
             TabView(selection: $selectedTab) {
                 ServerListContent()
                     .tag(0)
-                QuickActionsContent()
-                    .tag(1)
                 SettingsView()
-                    .tag(2)
+                    .tag(1)
             }
             .tabViewStyle(.verticalPage)
         }
@@ -47,6 +45,7 @@ struct MainTabView: View {
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         List {
@@ -107,7 +106,26 @@ struct SettingsView: View {
                         .foregroundStyle(.red)
                 }
             }
+
+            Section {
+                Button(role: .destructive) {
+                    showDeleteConfirmation = true
+                } label: {
+                    Label("Delete Account", systemImage: "trash.fill")
+                        .foregroundStyle(.red)
+                }
+            }
         }
         .navigationTitle("Settings")
+        .alert("Delete Account", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                Task {
+                    await appState.deleteAccount()
+                }
+            }
+        } message: {
+            Text("Are you sure? This will permanently delete your account and all data.")
+        }
     }
 }
