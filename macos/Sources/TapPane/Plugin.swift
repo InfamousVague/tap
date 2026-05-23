@@ -30,15 +30,13 @@ public final class TapPaneProvider: NSObject, SuitePane {
     public var paneTintHex: String { "#06B6D4" }
 
     public func paneMenuBarImage() -> NSImage {
-        // `bolt.horizontal.circle` reads as "instant remote action"
-        // which is what Tap does. Template image — the menu-bar
-        // tints it; in the popover header it gets the cyan accent.
-        let img = NSImage(
-            systemSymbolName: "bolt.horizontal.circle",
-            accessibilityDescription: "Tap"
-        ) ?? NSImage()
-        img.isTemplate = true
-        return img
+        // The full-colour server-tapped logo (TapBrand resolves it
+        // from the pane bundle in both standalone-app and merged-
+        // dylib loads). Not a template — the smiling-server
+        // character is the brand; flattening to a B/W silhouette
+        // would erase the antenna + face that v2's logo work
+        // exists to surface.
+        TapBrand.menuBarIcon
     }
 
     public func paneMakeView() -> NSView {

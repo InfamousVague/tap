@@ -48,9 +48,17 @@ struct ServerListView: View {
     private var header: some View {
         HStack(spacing: 8) {
             HStack(spacing: 6) {
-                Image(systemName: "bolt.horizontal.circle.fill")
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color(red: 0.02, green: 0.71, blue: 0.83))
+                // Small squircle chip of the v2 server-tapped logo.
+                // Reads as the brand mark at header scale while the
+                // tracking-1.5 "TAP" text carries the typographic
+                // weight — same pattern as Espresso / Uninstaller.
+                Image(nsImage: TapBrand.logo)
+                    .resizable()
+                    .interpolation(.high)
+                    .scaledToFit()
+                    .frame(width: 16, height: 16)
+                    .clipShape(RoundedRectangle(
+                        cornerRadius: 4, style: .continuous))
                 Text("TAP")
                     .font(.system(size: 12, weight: .bold))
                     .tracking(1.5)

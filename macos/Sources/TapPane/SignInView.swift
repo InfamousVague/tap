@@ -14,9 +14,18 @@ struct SignInView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                Image(systemName: "bolt.horizontal.circle.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Color(red: 0.02, green: 0.71, blue: 0.83))
+                // The server-tapped logo (v2 brand). Squircle-
+                // cropped so the image's blue gradient background
+                // doesn't paint a flat tile against the popover
+                // material — same shape every macOS app icon takes
+                // in Finder / the Dock.
+                Image(nsImage: TapBrand.logo)
+                    .resizable()
+                    .interpolation(.high)
+                    .scaledToFit()
+                    .frame(width: 96, height: 96)
+                    .clipShape(RoundedRectangle(
+                        cornerRadius: 22, style: .continuous))
 
                 Text("Tap")
                     .font(.system(size: 28, weight: .bold))
