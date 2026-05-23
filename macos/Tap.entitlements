@@ -7,14 +7,15 @@
   (F6ZAL7ANAD.group.com.mattssoftware.tap) or containermanagerd
   rejects access at runtime.
 
-  Sign in with Apple — required for `ASAuthorizationAppleIDProvider`
-  to issue a credential. Without this entitlement the SIWA flow
-  fails immediately with AuthenticationServices error 1000
-  (ASAuthorizationError.unknown). The bundle id
-  `com.mattssoftware.tap` must also have "Sign in with Apple"
-  enabled under its App ID at developer.apple.com — entitlement +
-  portal capability are both required; one without the other is
-  the same error.
+  HISTORICAL ATTEMPT: added `com.apple.developer.applesignin` so
+  `ASAuthorizationAppleIDProvider` could issue a credential. The
+  signed binary then refused to launch with `Launchd job spawn
+  failed` (POSIX 163) — macOS rejects the entitlement at launch
+  unless the App ID `com.mattssoftware.tap` ALSO has "Sign in
+  with Apple" enabled at developer.apple.com → Identifiers. Until
+  that portal capability is in place, the entitlement makes the
+  binary unlaunchable. Reverted; re-add this block (see git
+  history) once the dev portal capability is enabled.
 
   NOT sandboxed: the SSH execute path goes through
   `tap.mattssoftware.com` over HTTPS but the host also stores the
@@ -28,10 +29,6 @@
   <key>com.apple.security.application-groups</key>
   <array>
     <string>F6ZAL7ANAD.group.com.mattssoftware.tap</string>
-  </array>
-  <key>com.apple.developer.applesignin</key>
-  <array>
-    <string>Default</string>
   </array>
 </dict>
 </plist>
