@@ -159,13 +159,20 @@ struct ServerListView: View {
     // MARK: Footer
 
     private var footer: some View {
+        // Icon-only footer actions — the prior "+ Server"
+        // secondary button took up half the footer width for no
+        // discoverability gain (the plus + tooltip is enough).
+        // Matches the visual weight of the ellipsis menu on the
+        // right so the footer reads as a balanced icon bar.
         HStack(spacing: 8) {
             Button {
                 showingAddServer = true
             } label: {
-                Label("Server", systemImage: "plus")
+                Image(systemName: "plus")
+                    .font(.system(size: 13, weight: .medium))
             }
-            .buttonStyle(StashSecondaryButton())
+            .buttonStyle(StashIconButton())
+            .help("Add a server")
 
             Spacer()
 
@@ -319,11 +326,11 @@ private struct ServerSection: View {
                 .help("Browse the built-in command catalog")
 
                 Button(action: onAddCommand) {
-                    Label("Custom", systemImage: "plus.circle")
+                    Label("Cmd", systemImage: "plus.circle")
                         .font(.system(size: 11, weight: .medium))
                 }
                 .buttonStyle(StashGhostButton())
-                .help("Add a command by typing its label + shell line")
+                .help("Add a custom command — type its label + shell line")
 
                 Button(action: onAdhoc) {
                     Label("Adhoc", systemImage: "terminal")
