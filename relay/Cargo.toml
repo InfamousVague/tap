@@ -42,6 +42,11 @@ rsa = "0.9"
 sha2 = "0.10"
 signature = "2"
 reqwest = { version = "0.12", features = ["json"] }
+# ES256 signing for the SIWA web-OAuth client_secret JWT
+# (different algorithm than the iOS native flow, which uses RS256
+# coming from Apple — we *issue* an ES256 JWT signed with our SIWA
+# .p8 key when exchanging the OAuth code for an id_token).
+jsonwebtoken = "9"
 
 # TOTP
 totp-rs = { version = "5", features = ["gen_secret"] }

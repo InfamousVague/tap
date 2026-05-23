@@ -63,12 +63,17 @@ pub async fn apple_sign_in(
 }
 
 #[derive(Debug)]
-struct AppleClaims {
-    sub: String,
+pub(super) struct AppleClaims {
+    pub sub: String,
+    pub email: Option<String>,
 }
 
-/// Verify an Apple identity token JWT.
-async fn verify_apple_identity_token(token: &str) -> anyhow::Result<AppleClaims> {
+/// Verify an Apple identity token JWT. Exposed `pub(super)` so the
+/// macOS web-OAuth handler (apple_web.rs) can hand the id_token it
+/// gets back from `/auth/token` straight through the same verifier
+/// the iOS/watch native flow uses — same JWKS, same `aud` allowlist
+/// (the Services ID was added above), same `sub` semantics.
+pub(super) async fn verify_apple_identity_token(token: &str) -> anyhow::Result<AppleClaims> {
     let parts: Vec<&str> = token.split('.').collect();
     if parts.len() != 3 {
         anyhow::bail!("Invalid JWT format");
@@ -133,6 +138,12 @@ async fn verify_apple_identity_token(token: &str) -> anyhow::Result<AppleClaims>
         "com.mattssoftware.tap.watchkitapp",
         "com.mattssoftware.tap",
         "com.mattssoftware.tap.macos",
+        // Services ID for the macOS web-OAuth flow — id_token issued
+        // by Apple's `/auth/token` endpoint carries this in `aud`
+        // when the client_id is the Services ID rather than a bare
+        // App ID. Same JWT structure, just a different `aud` value;
+        // verification logic is otherwise identical.
+        "com.mattssoftware.tap.signin",
     ];
     if !valid_audiences.contains(&aud) {
         anyhow::bail!("Invalid audience: {}", aud);
@@ -148,7 +159,14 @@ async fn verify_apple_identity_token(token: &str) -> anyhow::Result<AppleClaims>
         .ok_or_else(|| anyhow::anyhow!("Missing sub claim"))?
         .to_string();
 
-    Ok(AppleClaims { sub })
+    // Email is present on the id_token from the web-OAuth flow
+    // (when `scope=email` was requested at /authorize), and on the
+    // native iOS/watch first sign-in. Subsequent native sign-ins may
+    // omit it. Either way, it's optional from our perspective —
+    // find_or_create_user takes an `Option<&str>`.
+    let email = claims["email"].as_str().map(String::from);
+
+    Ok(AppleClaims { sub, email })
 }
 
 /// POST /auth/setup — first-time setup (creates first admin user + token)

@@ -3,6 +3,7 @@ mod commands;
 mod exec;
 mod keys;
 mod auth_routes;
+mod apple_web;
 mod health;
 mod history;
 mod config_route;
@@ -39,6 +40,20 @@ pub fn build_router(state: Arc<AppState>) -> Router {
     // Public routes (no auth required)
     let public = Router::new()
         .route("/auth/apple", post(auth_routes::apple_sign_in))
+        // macOS SIWA via ASWebAuthenticationSession lands here (form-
+        // post from Apple). Public because Apple is calling it from
+        // its own backend, not the authenticated Tap client.
+        .route("/auth/apple/web/callback", post(apple_web::web_callback))
+        // Domain verification file Apple polls during Services ID
+        // configuration. Served from a path configured under
+        // [siwa_web] in relay.toml; 404 until that's wired up.
+        .route("/.well-known/apple-developer-domain-association.txt",
+               get(apple_web::domain_association))
+        // Apple has historically accepted both `.txt` and no-extension
+        // variants of the well-known. Serve both off the same handler
+        // so we don't get tripped up by a future portal change.
+        .route("/.well-known/apple-developer-domain-association",
+               get(apple_web::domain_association))
         .route("/auth/setup", post(auth_routes::setup))
         .route("/health", get(health::health_check))
         .route("/connect/:token", get(setup::install_script))

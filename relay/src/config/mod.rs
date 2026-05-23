@@ -17,9 +17,62 @@ pub struct RelayConfig {
     pub notifications: NotificationsConfig,
     #[serde(default)]
     pub import: ImportConfig,
+    #[serde(default)]
+    pub siwa_web: SiwaWebConfig,
 
     #[serde(skip)]
     config_path: Option<PathBuf>,
+}
+
+/// Sign in with Apple — web OAuth (`ASWebAuthenticationSession`) flow.
+/// Backs the macOS Tap port, which can't claim the native
+/// `com.apple.developer.applesignin` entitlement under Developer ID
+/// distribution (see tap/macos/Tap.entitlements for the full
+/// investigation). The flow is: Mac client opens the Apple auth URL
+/// in a system-controlled web view, Apple POSTs the code back to
+/// `/auth/apple/web/callback`, the relay exchanges it for an
+/// id_token, validates it through the same verifier the iOS/watch
+/// native flow uses, and redirects to `tap://signin?bearer=…` so
+/// ASWebAuthenticationSession captures the bearer and hands it to
+/// the macOS app.
+///
+/// All four fields must be set for the web flow to function;
+/// missing config = `/auth/apple/web/callback` returns 501.
+/// Configured via:
+///
+///   [siwa_web]
+///   team_id     = "F6ZAL7ANAD"
+///   services_id = "com.mattssoftware.tap.signin"
+///   key_id      = "B4AJ7V3BK9"
+///   key_path    = "/etc/tap/siwa-key.p8"
+///   # Optional — path to the apple-developer-domain-association.txt
+///   # file Apple gives you after configuring the Services ID's
+///   # domain. The relay serves it at /.well-known/<filename>.
+///   domain_association_path = "/etc/tap/apple-developer-domain-association.txt"
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct SiwaWebConfig {
+    #[serde(default)]
+    pub team_id: String,
+    #[serde(default)]
+    pub services_id: String,
+    #[serde(default)]
+    pub key_id: String,
+    #[serde(default)]
+    pub key_path: String,
+    #[serde(default)]
+    pub domain_association_path: Option<String>,
+}
+
+impl SiwaWebConfig {
+    /// True iff all four required fields are populated. Lets the
+    /// route layer short-circuit with a 501 instead of crashing when
+    /// the operator hasn't filled in the SIWA web section yet.
+    pub fn is_configured(&self) -> bool {
+        !self.team_id.is_empty()
+            && !self.services_id.is_empty()
+            && !self.key_id.is_empty()
+            && !self.key_path.is_empty()
+    }
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -193,6 +246,7 @@ impl Default for RelayConfig {
             audit: AuditConfig::default(),
             notifications: NotificationsConfig::default(),
             import: ImportConfig::default(),
+            siwa_web: SiwaWebConfig::default(),
             config_path: None,
         }
     }

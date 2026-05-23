@@ -81,6 +81,27 @@ final class TapStore {
         isLoading = false
     }
 
+    /// Web-OAuth sign-in completion (macOS only).
+    ///
+    /// The relay already did the heavy lifting before we got here:
+    /// exchanged the OAuth code for an id_token, validated it, ran
+    /// `find_or_create_user`, and issued this bearer. All we have
+    /// to do is stash it the same way the native path would and
+    /// pull the user's config. Same end state as `signInWithApple`,
+    /// just acquired via the `ASWebAuthenticationSession` → relay
+    /// `/auth/apple/web/callback` round-trip instead of native
+    /// `ASAuthorizationAppleIDProvider` (which amfid blocks on
+    /// Developer ID Mac apps — see tap/macos/Tap.entitlements).
+    func signInWithWebBearer(_ bearer: String) async {
+        isLoading = true
+        errorMessage = nil
+        keychain.saveToken(bearer)
+        apiClient.setToken(bearer)
+        isAuthenticated = true
+        await loadConfig()
+        isLoading = false
+    }
+
     func signOut() {
         keychain.deleteToken()
         apiClient.setToken(nil)
