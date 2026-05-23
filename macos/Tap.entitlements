@@ -5,17 +5,19 @@
   App Group — write SharedTapState into the Group Container the
   TapWidgets.appex reads. ID must be team-prefixed
   (F6ZAL7ANAD.group.com.mattssoftware.tap) or containermanagerd
-  rejects access at runtime.
+  rejects access at runtime. (Group id stays `.tap`, not `.tap.macos`,
+  so the existing widget extension and the host find the same
+  container — App Groups are a separate registration from the
+  primary bundle id.)
 
-  HISTORICAL ATTEMPT: added `com.apple.developer.applesignin` so
-  `ASAuthorizationAppleIDProvider` could issue a credential. The
-  signed binary then refused to launch with `Launchd job spawn
-  failed` (POSIX 163) — macOS rejects the entitlement at launch
-  unless the App ID `com.mattssoftware.tap` ALSO has "Sign in
-  with Apple" enabled at developer.apple.com → Identifiers. Until
-  that portal capability is in place, the entitlement makes the
-  binary unlaunchable. Reverted; re-add this block (see git
-  history) once the dev portal capability is enabled.
+  Sign in with Apple — required by `ASAuthorizationAppleIDProvider`.
+  This works because the host's CFBundleIdentifier was switched to
+  `com.mattssoftware.tap.macos`, which already has SIWA enabled at
+  developer.apple.com AND a Developer ID provisioning profile
+  generated for it. `scripts/make-app.sh` copies that profile into
+  `Contents/embedded.provisionprofile` so launchd's pre-launch
+  check accepts the entitlement (without an embedded profile, the
+  binary fails to launch with POSIX 163 "Launchd job spawn failed").
 
   NOT sandboxed: the SSH execute path goes through
   `tap.mattssoftware.com` over HTTPS but the host also stores the
@@ -29,6 +31,10 @@
   <key>com.apple.security.application-groups</key>
   <array>
     <string>F6ZAL7ANAD.group.com.mattssoftware.tap</string>
+  </array>
+  <key>com.apple.developer.applesignin</key>
+  <array>
+    <string>Default</string>
   </array>
 </dict>
 </plist>

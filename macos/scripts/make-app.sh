@@ -105,7 +105,13 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <dict>
   <key>CFBundleName</key><string>Tap</string>
   <key>CFBundleDisplayName</key><string>Tap</string>
-  <key>CFBundleIdentifier</key><string>com.mattssoftware.tap</string>
+  <!-- Bundle id is `.macos` (not bare `.tap`) so the binary rides
+       the existing developer-portal App ID at
+       F6ZAL7ANAD.com.mattssoftware.tap.macos — which already has
+       Sign in with Apple enabled and a Developer ID provisioning
+       profile generated for it. The bare `.tap` id stays reserved
+       for the iOS / watchOS companion apps. -->
+  <key>CFBundleIdentifier</key><string>com.mattssoftware.tap.macos</string>
   <key>CFBundleExecutable</key><string>Tap</string>
 $ICON_KEY
   <key>CFBundlePackageType</key><string>APPL</string>
@@ -118,6 +124,26 @@ $ICON_KEY
 </dict>
 </plist>
 PLIST
+
+# Embed the Mac Developer ID provisioning profile so SIWA works.
+# launchd's pre-launch check verifies the host's
+# `com.apple.developer.applesignin` entitlement against an embedded
+# profile — without one the binary fails to launch with POSIX 163
+# "Launchd job spawn failed", even when the entitlement is present
+# AND the dev portal has SIWA enabled for the App ID.
+#
+# The profile was created in Xcode for the TapMac.xcodeproj
+# variant (same `com.mattssoftware.tap.macos` bundle id we now use
+# for the SwiftPM build, so it covers this binary). Override
+# PROVISION_PROFILE_PATH if you regenerate it under a new UUID.
+PROVISION_PROFILE_PATH="${PROVISION_PROFILE_PATH:-$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/8363f039-9ae9-4d6b-8c5b-e81cd3240f6b.provisionprofile}"
+if [ -f "$PROVISION_PROFILE_PATH" ]; then
+  cp "$PROVISION_PROFILE_PATH" "$APP/Contents/embedded.provisionprofile"
+  echo "✓ embedded provisioning profile"
+else
+  echo "⚠ no provisioning profile at $PROVISION_PROFILE_PATH —"
+  echo "  Sign-in-with-Apple will fail to launch on a clean machine."
+fi
 
 # Inside-out codesign with hardened runtime. Sign in this exact
 # order so each enclosing bundle re-seals correctly:
