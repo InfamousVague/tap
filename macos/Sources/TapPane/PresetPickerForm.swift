@@ -336,7 +336,13 @@ struct PresetPickerForm: View {
                 serverId: serverID,
                 name: label,
                 command: resolved,
-                description: nil
+                description: nil,
+                // Preset metadata says whether this is safe to
+                // run without a confirm tap (e.g. Uptime / Disk
+                // Usage = false, Restart Service / Reboot Server
+                // = true). Pass it through so the relay records
+                // the right confirm state at create time.
+                confirm: preset.confirm
             )
             onClose()
         } catch {

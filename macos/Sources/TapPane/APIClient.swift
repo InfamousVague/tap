@@ -69,10 +69,17 @@ final class APIClient {
 
     func createCommand(serverId: String, name: String,
                        command: String,
-                       description: String?) async throws {
+                       description: String?,
+                       confirm: Bool? = nil) async throws {
+        // `confirm` defaults to the relay's NewCommand default
+        // (true) when we don't send it. Pass false explicitly for
+        // safe read-only presets so they don't require a confirm
+        // tap on every run; pass true for destructive ones. Custom
+        // commands omit it and inherit the safe-by-default `true`.
+        var body: [String: Any] = ["label": name, "command": command]
+        if let confirm { body["confirm"] = confirm }
         let _: Command = try await post(
-            "/servers/\(serverId)/commands",
-            body: ["label": name, "command": command]
+            "/servers/\(serverId)/commands", body: body
         )
     }
 

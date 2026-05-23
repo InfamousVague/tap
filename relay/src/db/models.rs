@@ -42,6 +42,15 @@ pub struct Command {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct NewCommand {
+    // Defaulted because the create + update handlers in
+    // routes/commands.rs always override this from the URL's
+    // `:server_id` / `:id` path param after deserialization —
+    // the client doesn't (and shouldn't have to) duplicate the
+    // server id in the JSON body. Without #[serde(default)]
+    // serde rejected `POST /servers/:id/commands` bodies of
+    // `{"label": …, "command": …}` with 422 before the handler
+    // could fix the field up.
+    #[serde(default)]
     pub server_id: String,
     pub label: String,
     pub command: String,

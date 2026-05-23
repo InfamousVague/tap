@@ -213,10 +213,12 @@ final class TapStore {
 
     func createCommand(serverId: String, name: String,
                        command: String,
-                       description: String?) async throws {
+                       description: String?,
+                       confirm: Bool? = nil) async throws {
         try await apiClient.createCommand(
             serverId: serverId, name: name,
-            command: command, description: description
+            command: command, description: description,
+            confirm: confirm
         )
         await loadConfig()
     }
