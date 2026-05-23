@@ -195,16 +195,33 @@ struct StashSectionHeader: View {
     }
 }
 
-/// Styled text field with label
+/// Styled text field with label.
+///
+/// Layout is **label-above-field, field-full-width** by default
+/// (Vercel/Linear-style stacked form rows). Was previously
+/// LabeledContent with a side-by-side label column, but in a
+/// narrow 340pt pane the label-on-the-left layout made every
+/// field start at a different x position (LabeledContent sizes
+/// the label column to each label's natural width), so the right
+/// edges of the inputs lined up inconsistently and left dead
+/// space on the right.
+///
+/// The `width` parameter is now a *maximum* width, not a fixed
+/// one — passing nil (default) lets the field fill its container.
+/// Pass an explicit width when you want a narrow column (e.g.
+/// the Port field in the Port+User row).
 struct StashField: View {
     let label: String
     let placeholder: String
     @Binding var text: String
-    var width: CGFloat = 300
+    var width: CGFloat? = nil
     var isMonospaced: Bool = false
 
     var body: some View {
-        LabeledContent {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.system(size: 11))
+                .foregroundColor(.stashTextSecondary)
             TextField(placeholder, text: $text)
                 .textFieldStyle(.plain)
                 .font(isMonospaced ? .system(.body, design: .monospaced) : .body)
@@ -215,24 +232,25 @@ struct StashField: View {
                     RoundedRectangle(cornerRadius: StashRadius.sm)
                         .stroke(Color.stashBorderStrong, lineWidth: 1)
                 )
-                .frame(width: width)
-        } label: {
-            Text(label)
-                .font(.system(size: 13))
-                .foregroundColor(.stashTextSecondary)
+                .frame(maxWidth: width ?? .infinity)
         }
     }
 }
 
-/// Styled secure field with label
+/// Styled secure field with label — same label-above pattern as
+/// StashField. See its doc-comment for why we moved away from
+/// LabeledContent's side-by-side layout in the popover panes.
 struct StashSecureField: View {
     let label: String
     let placeholder: String
     @Binding var text: String
-    var width: CGFloat = 300
+    var width: CGFloat? = nil
 
     var body: some View {
-        LabeledContent {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.system(size: 11))
+                .foregroundColor(.stashTextSecondary)
             SecureField(placeholder, text: $text)
                 .textFieldStyle(.plain)
                 .padding(8)
@@ -242,11 +260,7 @@ struct StashSecureField: View {
                     RoundedRectangle(cornerRadius: StashRadius.sm)
                         .stroke(Color.stashBorderStrong, lineWidth: 1)
                 )
-                .frame(width: width)
-        } label: {
-            Text(label)
-                .font(.system(size: 13))
-                .foregroundColor(.stashTextSecondary)
+                .frame(maxWidth: width ?? .infinity)
         }
     }
 }
