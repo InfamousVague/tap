@@ -14,6 +14,7 @@ struct ServerListView: View {
     @State private var showingAdhoc = false
     @State private var adhocServer: Server?
     @State private var addCommandFor: Server?
+    @State private var presetPickerFor: Server?
     @State private var commandOutput: CommandOutputContext?
     @State private var runningCommandID: String?
 
@@ -37,6 +38,12 @@ struct ServerListView: View {
             } else if let server = addCommandFor {
                 AddCommandForm(serverID: server.id,
                                onClose: { addCommandFor = nil })
+            } else if let server = presetPickerFor {
+                PresetPickerForm(serverID: server.id,
+                                 onClose: {
+                                     presetPickerFor = nil
+                                     Task { await store.loadConfig() }
+                                 })
             } else if let ctx = commandOutput {
                 CommandOutputView(response: ctx.response,
                                   commandString: ctx.commandString,
@@ -111,6 +118,7 @@ struct ServerListView: View {
                             onToggle: { toggleExpanded(server.id) },
                             onRun: { runCommand(server: server, command: $0) },
                             onAddCommand: { addCommandFor = server },
+                            onBrowsePresets: { presetPickerFor = server },
                             onAdhoc: { adhocServer = server },
                             onDelete: { deleteServer(server) }
                         )
@@ -219,6 +227,7 @@ private struct ServerSection: View {
     let onToggle: () -> Void
     let onRun: (Command) -> Void
     let onAddCommand: () -> Void
+    let onBrowsePresets: () -> Void
     let onAdhoc: () -> Void
     let onDelete: () -> Void
 
@@ -295,18 +304,33 @@ private struct ServerSection: View {
                     .padding(.vertical, 8)
             }
 
+            // Three entry points for adding a command to this
+            // server: Presets browses the 28-item built-in
+            // catalog (System, Systemd, Docker, Nginx, Database,
+            // Deploy, Network); Custom opens the manual label +
+            // command form; Adhoc fires a one-off without
+            // persisting it.
             HStack(spacing: 6) {
-                Button(action: onAddCommand) {
-                    Label("Add Command", systemImage: "plus.circle")
+                Button(action: onBrowsePresets) {
+                    Label("Presets", systemImage: "square.grid.2x2")
                         .font(.system(size: 11, weight: .medium))
                 }
                 .buttonStyle(StashGhostButton())
+                .help("Browse the built-in command catalog")
+
+                Button(action: onAddCommand) {
+                    Label("Custom", systemImage: "plus.circle")
+                        .font(.system(size: 11, weight: .medium))
+                }
+                .buttonStyle(StashGhostButton())
+                .help("Add a command by typing its label + shell line")
 
                 Button(action: onAdhoc) {
                     Label("Adhoc", systemImage: "terminal")
                         .font(.system(size: 11, weight: .medium))
                 }
                 .buttonStyle(StashGhostButton())
+                .help("Run a one-off command without saving it")
 
                 Spacer()
 
