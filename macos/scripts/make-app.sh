@@ -15,7 +15,7 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 APP="$ROOT/Tap.app"
 SRC_ICON="$ROOT/art/AppIcon-source.png"
-VERSION="1.1.3"
+VERSION="2.0.0"
 # Same Developer ID the rest of the suite uses. Override
 # SIGN_IDENTITY=- for ad-hoc local-only builds (skips notarize).
 SIGN_IDENTITY="${SIGN_IDENTITY:-0948896DC970503ADEF5B5070E0BB3E9D9047757}"
