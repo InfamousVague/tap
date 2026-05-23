@@ -18,25 +18,38 @@ struct ServerListView: View {
     @State private var runningCommandID: String?
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider().background(Color.stashBorder)
-            scrollingServerList
-            Divider().background(Color.stashBorder)
-            footer
-        }
-        .sheet(isPresented: $showingAddServer) {
-            AddServerSheet()
-        }
-        .sheet(item: $adhocServer) { server in
-            AdhocCommandSheet(server: server)
-        }
-        .sheet(item: $addCommandFor) { server in
-            AddCommandSheet(serverID: server.id)
-        }
-        .sheet(item: $commandOutput) { ctx in
-            CommandOutputSheet(response: ctx.response,
-                               commandString: ctx.commandString)
+        // State-driven view switch. Used to use `.sheet(…)` modifiers
+        // but a sheet inside an NSPopover with `.transient`
+        // behaviour gets nuked the moment the user tabs away from
+        // the launcher — Apple destroys the sheet window when the
+        // popover dismisses, and the form's @State for typed-in
+        // values goes with it. Rendering the form inline as the
+        // pane's main content (state lives in this View's @State,
+        // the parent NSPopover keeps its contentViewController
+        // alive across hide/show) preserves what the user typed
+        // across tab-outs and popover reopens.
+        Group {
+            if showingAddServer {
+                AddServerForm(onClose: { showingAddServer = false })
+            } else if let server = adhocServer {
+                AdhocCommandForm(server: server,
+                                 onClose: { adhocServer = nil })
+            } else if let server = addCommandFor {
+                AddCommandForm(serverID: server.id,
+                               onClose: { addCommandFor = nil })
+            } else if let ctx = commandOutput {
+                CommandOutputView(response: ctx.response,
+                                  commandString: ctx.commandString,
+                                  onClose: { commandOutput = nil })
+            } else {
+                VStack(spacing: 0) {
+                    header
+                    Divider().background(Color.stashBorder)
+                    scrollingServerList
+                    Divider().background(Color.stashBorder)
+                    footer
+                }
+            }
         }
         .task {
             await store.loadConfig()

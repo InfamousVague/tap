@@ -1,15 +1,33 @@
 import SwiftUI
+import TapShared
+
+// Despite the filename, these are **inline forms**, not sheets.
+//
+// They used to be presented via `.sheet(isPresented:)` inside
+// ServerListView, but a sheet inside an NSPopover with `.transient`
+// behaviour gets vapourised the moment the user tabs away from the
+// launcher — Apple's window for the sheet detaches when the
+// popover dismisses and the SwiftUI @State for typed-in form values
+// goes with it. Rendering the same content inline as the pane's
+// main view (state lives in `ServerListView`'s @State, the parent
+// NSPopover keeps its contentViewController alive across hide /
+// show) preserves what the user typed.
+//
+// Each form takes an `onClose: () -> Void` callback the caller flips
+// to its own state flag (showingAddServer = false, addCommandFor =
+// nil, etc.). No more `@Environment(\.dismiss)` — that was specific
+// to the sheet lifecycle.
 
 // MARK: - Add Server
 
-/// Quick add-server sheet. The full provisioning flow (password +
+/// Quick add-server form. The full provisioning flow (password +
 /// connection verify + bulk commands) lives elsewhere in TapMac; the
-/// popover sheet is intentionally minimal — name, host, port, user —
+/// pane form is intentionally minimal — name, host, port, user —
 /// which is the 90% case. Power users can still use the (eventually
 /// re-attached) window for the full provision flow.
-struct AddServerSheet: View {
+struct AddServerForm: View {
     @Environment(TapStore.self) private var store
-    @Environment(\.dismiss) private var dismiss
+    let onClose: () -> Void
 
     @State private var name = ""
     @State private var host = ""
@@ -21,21 +39,21 @@ struct AddServerSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sheetHeader(title: "Add Server", dismiss: dismiss)
+            formHeader(title: "Add Server", onClose: onClose)
 
             StashField(label: "Name", placeholder: "production",
-                       text: $name, width: 240)
+                       text: $name, width: 280)
             StashField(label: "Host", placeholder: "203.0.113.10",
-                       text: $host, width: 240, isMonospaced: true)
+                       text: $host, width: 280, isMonospaced: true)
             HStack {
                 StashField(label: "Port", placeholder: "22",
                            text: $portString, width: 80)
                 StashField(label: "User", placeholder: "root",
-                           text: $username, width: 140)
+                           text: $username, width: 180)
             }
             StashSecureField(label: "Password",
                              placeholder: "SSH password",
-                             text: $password, width: 240)
+                             text: $password, width: 280)
 
             if let error {
                 Text(error)
@@ -43,9 +61,11 @@ struct AddServerSheet: View {
                     .foregroundColor(.stashError)
             }
 
+            Spacer()
+
             HStack {
                 Spacer()
-                Button("Cancel") { dismiss() }
+                Button("Cancel") { onClose() }
                     .buttonStyle(StashSecondaryButton())
                 Button {
                     Task { await provision() }
@@ -62,9 +82,8 @@ struct AddServerSheet: View {
                 .disabled(!canSubmit || isWorking)
             }
         }
-        .padding(20)
-        .frame(width: 340)
-        .background(Color.stashBgPrimary)
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private var canSubmit: Bool {
@@ -81,7 +100,7 @@ struct AddServerSheet: View {
                 host: host, port: port, username: username,
                 password: password, name: name, commands: nil
             )
-            dismiss()
+            onClose()
         } catch {
             self.error = error.localizedDescription
         }
@@ -91,11 +110,11 @@ struct AddServerSheet: View {
 
 // MARK: - Add Command
 
-struct AddCommandSheet: View {
+struct AddCommandForm: View {
     @Environment(TapStore.self) private var store
-    @Environment(\.dismiss) private var dismiss
-
     let serverID: String
+    let onClose: () -> Void
+
     @State private var name = ""
     @State private var command = ""
     @State private var isWorking = false
@@ -103,13 +122,13 @@ struct AddCommandSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sheetHeader(title: "Add Command", dismiss: dismiss)
+            formHeader(title: "Add Command", onClose: onClose)
 
             StashField(label: "Label", placeholder: "Restart nginx",
-                       text: $name, width: 240)
+                       text: $name, width: 280)
             StashField(label: "Command",
                        placeholder: "systemctl restart nginx",
-                       text: $command, width: 240, isMonospaced: true)
+                       text: $command, width: 280, isMonospaced: true)
 
             if let error {
                 Text(error)
@@ -117,9 +136,11 @@ struct AddCommandSheet: View {
                     .foregroundColor(.stashError)
             }
 
+            Spacer()
+
             HStack {
                 Spacer()
-                Button("Cancel") { dismiss() }
+                Button("Cancel") { onClose() }
                     .buttonStyle(StashSecondaryButton())
                 Button {
                     Task { await create() }
@@ -130,9 +151,8 @@ struct AddCommandSheet: View {
                 .disabled(!canSubmit || isWorking)
             }
         }
-        .padding(20)
-        .frame(width: 340)
-        .background(Color.stashBgPrimary)
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private var canSubmit: Bool { !name.isEmpty && !command.isEmpty }
@@ -145,7 +165,7 @@ struct AddCommandSheet: View {
                 serverId: serverID, name: name,
                 command: command, description: nil
             )
-            dismiss()
+            onClose()
         } catch {
             self.error = error.localizedDescription
         }
@@ -155,11 +175,11 @@ struct AddCommandSheet: View {
 
 // MARK: - Adhoc Command
 
-struct AdhocCommandSheet: View {
+struct AdhocCommandForm: View {
     @Environment(TapStore.self) private var store
-    @Environment(\.dismiss) private var dismiss
-
     let server: Server
+    let onClose: () -> Void
+
     @State private var command = ""
     @State private var output: ExecResponse?
     @State private var isWorking = false
@@ -167,7 +187,7 @@ struct AdhocCommandSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sheetHeader(title: "Adhoc on \(server.name)", dismiss: dismiss)
+            formHeader(title: "Adhoc on \(server.name)", onClose: onClose)
 
             StashField(label: "Command",
                        placeholder: "uptime",
@@ -183,9 +203,11 @@ struct AdhocCommandSheet: View {
                     .foregroundColor(.stashError)
             }
 
+            Spacer()
+
             HStack {
                 Spacer()
-                Button("Close") { dismiss() }
+                Button("Close") { onClose() }
                     .buttonStyle(StashSecondaryButton())
                 Button {
                     Task { await run() }
@@ -196,9 +218,8 @@ struct AdhocCommandSheet: View {
                 .disabled(command.isEmpty || isWorking)
             }
         }
-        .padding(20)
-        .frame(width: 380)
-        .background(Color.stashBgPrimary)
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private func run() async {
@@ -266,14 +287,14 @@ private struct AdhocOutputBlock: View {
 
 // MARK: - Command Output
 
-struct CommandOutputSheet: View {
-    @Environment(\.dismiss) private var dismiss
+struct CommandOutputView: View {
     let response: ExecResponse
     let commandString: String
+    let onClose: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sheetHeader(title: "Output", dismiss: dismiss)
+            formHeader(title: "Output", onClose: onClose)
 
             Text(commandString)
                 .font(.system(size: 11, design: .monospaced))
@@ -285,29 +306,35 @@ struct CommandOutputSheet: View {
 
             AdhocOutputBlock(output: response)
 
+            Spacer()
+
             HStack {
                 Spacer()
-                Button("Done") { dismiss() }
+                Button("Done") { onClose() }
                     .buttonStyle(StashPrimaryButton())
             }
         }
-        .padding(20)
-        .frame(width: 420)
-        .background(Color.stashBgPrimary)
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
 // MARK: - Helpers
 
+/// Header row used at the top of every inline form: bold title on
+/// the left, X button on the right that fires the form's onClose.
+/// Was `sheetHeader` taking a `DismissAction` when these were
+/// .sheet()-presented; now takes the closure the parent uses to
+/// flip its state flag back off.
 @ViewBuilder
-private func sheetHeader(title: String,
-                         dismiss: DismissAction) -> some View {
+private func formHeader(title: String,
+                        onClose: @escaping () -> Void) -> some View {
     HStack {
         Text(title)
             .font(.system(size: 14, weight: .semibold))
             .foregroundColor(.stashTextPrimary)
         Spacer()
-        Button { dismiss() } label: {
+        Button { onClose() } label: {
             Image(systemName: "xmark.circle.fill")
                 .font(.system(size: 14))
         }
