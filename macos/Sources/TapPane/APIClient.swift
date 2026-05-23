@@ -78,9 +78,22 @@ final class APIClient {
         // commands omit it and inherit the safe-by-default `true`.
         var body: [String: Any] = ["label": name, "command": command]
         if let confirm { body["confirm"] = confirm }
-        let _: Command = try await post(
+        // The relay's `commands::create` returns `{"id": "<uuid>"}`,
+        // NOT a full Command — decoding to Command failed every
+        // call with "data missing" (the relay-shaped envelope is
+        // missing label/command/server_id/timeout etc.), which
+        // killed the navigate-back even though the command itself
+        // saved fine. Decode the smaller envelope and discard.
+        let _: CreateCommandResponse = try await post(
             "/servers/\(serverId)/commands", body: body
         )
+    }
+
+    /// Shape of POST /servers/:id/commands' JSON response. Just
+    /// the server-assigned uuid — caller doesn't use it
+    /// (loadConfig refetches the full list right after).
+    private struct CreateCommandResponse: Decodable {
+        let id: String
     }
 
     func deleteCommand(id: String) async throws {
