@@ -41,19 +41,27 @@ struct AddServerForm: View {
         VStack(alignment: .leading, spacing: 14) {
             formHeader(title: "Add Server", onClose: onClose)
 
+            // Field widths sized so the LabeledContent label
+            // column on the left fits the label text. Pane is
+            // 340pt, padding 16+16 = 32, available 308pt; a 220pt
+            // field leaves ~85pt for the label — enough for
+            // "Password" (the longest one here) without wrapping.
             StashField(label: "Name", placeholder: "production",
-                       text: $name, width: 280)
+                       text: $name, width: 220)
             StashField(label: "Host", placeholder: "203.0.113.10",
-                       text: $host, width: 280, isMonospaced: true)
+                       text: $host, width: 220, isMonospaced: true)
+            // Port + User share a row: 60pt port + 130pt user +
+            // their two labels (~40+40) fits inside 308pt with
+            // breathing room for the HStack default spacing.
             HStack {
                 StashField(label: "Port", placeholder: "22",
-                           text: $portString, width: 80)
+                           text: $portString, width: 60)
                 StashField(label: "User", placeholder: "root",
-                           text: $username, width: 180)
+                           text: $username, width: 130)
             }
             StashSecureField(label: "Password",
                              placeholder: "SSH password",
-                             text: $password, width: 280)
+                             text: $password, width: 220)
 
             if let error {
                 Text(error)
@@ -125,10 +133,10 @@ struct AddCommandForm: View {
             formHeader(title: "Add Command", onClose: onClose)
 
             StashField(label: "Label", placeholder: "Restart nginx",
-                       text: $name, width: 280)
+                       text: $name, width: 220)
             StashField(label: "Command",
                        placeholder: "systemctl restart nginx",
-                       text: $command, width: 280, isMonospaced: true)
+                       text: $command, width: 220, isMonospaced: true)
 
             if let error {
                 Text(error)
@@ -191,7 +199,7 @@ struct AdhocCommandForm: View {
 
             StashField(label: "Command",
                        placeholder: "uptime",
-                       text: $command, width: 280, isMonospaced: true)
+                       text: $command, width: 220, isMonospaced: true)
 
             if let output {
                 AdhocOutputBlock(output: output)
